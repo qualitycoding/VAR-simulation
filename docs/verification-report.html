@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VAR Adaptive Simulator — verification against the 1998 thesis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#E9ECEE;
+  --paper-2:#F3F5F6;
+  --ink:#14202A;
+  --ink-soft:#4A5A66;
+  --rule:#C3CCD2;
+  --rule-soft:#D8DFE3;
+  --hot:#B83B0B;
+  --hot-bg:#F7E6DD;
+  --steel:#2F6485;
+  --steel-bg:#E2EAF0;
+  --ok:#2C6046;
+  --ok-bg:#E1EDE6;
+}
+:root:not([data-theme="light"]){}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#141B21; --paper-2:#1B242B; --ink:#E4EAEE; --ink-soft:#9DAEB9;
+    --rule:#33424D; --rule-soft:#26333C;
+    --hot:#F08A55; --hot-bg:#33201A;
+    --steel:#7FB4D6; --steel-bg:#182933;
+    --ok:#7CC6A0; --ok-bg:#16291F;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#141B21; --paper-2:#1B242B; --ink:#E4EAEE; --ink-soft:#9DAEB9;
+  --rule:#33424D; --rule-soft:#26333C;
+  --hot:#F08A55; --hot-bg:#33201A;
+  --steel:#7FB4D6; --steel-bg:#182933;
+  --ok:#7CC6A0; --ok-bg:#16291F;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Spectral",Georgia,"Times New Roman",serif;
+  font-weight:300; font-size:17px; line-height:1.66;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:860px;margin:0 auto;padding:0 clamp(18px,5vw,40px) 120px}
+h1,h2,h3,.mono,code,pre,th,.tag,.rail,figcaption{
+  font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+
+/* ---------- masthead ---------- */
+.mast{position:relative;padding:clamp(40px,9vw,88px) 0 34px;border-bottom:2px solid var(--ink)}
+.mast svg{position:absolute;inset:auto 0 24px 0;width:100%;height:132px;opacity:.28;pointer-events:none}
+.mast .inner{position:relative}
+h1{
+  font-size:clamp(25px,4.4vw,40px); font-weight:600; letter-spacing:-.022em;
+  line-height:1.16; margin:0 0 14px; max-width:20ch;
+}
+.deck{font-size:clamp(17px,2.2vw,20px);line-height:1.5;color:var(--ink-soft);max-width:52ch;margin:0 0 26px}
+.meta{font-family:"IBM Plex Mono",monospace;font-size:12.5px;line-height:1.9;color:var(--ink-soft)}
+.meta b{font-weight:500;color:var(--ink)}
+
+/* ---------- verdict ---------- */
+.verdict{margin:40px 0 8px;border:1px solid var(--rule);background:var(--paper-2)}
+.vrow{display:grid;grid-template-columns:1fr;gap:0;border-bottom:1px solid var(--rule-soft)}
+.vrow:last-child{border-bottom:0}
+@media(min-width:640px){.vrow{grid-template-columns:minmax(0,1fr) 168px}}
+.vq{padding:20px 22px}
+.vq p{margin:0;font-size:16.5px;line-height:1.55}
+.vq .q{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.04em;color:var(--ink-soft);margin-bottom:7px;display:block}
+.vans{
+  display:flex;align-items:center;justify-content:flex-start;gap:9px;
+  padding:20px 22px;font-family:"IBM Plex Mono",monospace;font-weight:600;
+  font-size:15px;letter-spacing:-.01em;
+}
+@media(min-width:640px){.vans{border-left:1px solid var(--rule-soft);justify-content:center}}
+.vans.no{color:var(--hot);background:var(--hot-bg)}
+.dot{width:9px;height:9px;border-radius:50%;background:currentColor;flex:none}
+
+/* ---------- structure ---------- */
+h2{
+  font-size:13px;font-weight:600;letter-spacing:.06em;margin:76px 0 4px;
+  padding-bottom:9px;border-bottom:1px solid var(--ink);color:var(--ink);
+}
+h2 .n{color:var(--ink-soft);font-weight:400;margin-right:12px}
+.lede{font-size:18px;color:var(--ink-soft);margin:22px 0 34px;max-width:60ch}
+p{max-width:68ch;margin:0 0 17px}
+a{color:var(--steel);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
+
+/* ---------- findings ---------- */
+.f{display:grid;grid-template-columns:1fr;margin:0 0 42px;padding-top:22px;border-top:1px solid var(--rule-soft)}
+@media(min-width:760px){.f{grid-template-columns:104px 1fr;gap:26px}}
+.rail{font-size:11.5px;line-height:1.55;color:var(--ink-soft);padding-top:4px;margin-bottom:10px}
+.rail .id{display:block;font-weight:600;font-size:15px;color:var(--ink);letter-spacing:-.02em;margin-bottom:6px}
+.tag{display:inline-block;font-size:10.5px;font-weight:500;letter-spacing:.05em;padding:2px 7px;border:1px solid currentColor}
+.tag.block{color:var(--hot);background:var(--hot-bg)}
+.tag.adv{color:var(--steel);background:var(--steel-bg)}
+.tag.good{color:var(--ok);background:var(--ok-bg)}
+.f h3{font-size:19px;font-weight:600;letter-spacing:-.015em;line-height:1.35;margin:0 0 13px;max-width:44ch}
+.f p{font-size:16.5px}
+.fix{border-left:2px solid var(--steel);padding:2px 0 2px 16px;margin:18px 0 0;max-width:66ch}
+.fix p{margin:0;font-size:15.5px;color:var(--ink-soft)}
+.fix p+p{margin-top:9px}
+.fix b{font-family:"IBM Plex Mono",monospace;font-size:11.5px;font-weight:600;letter-spacing:.05em;color:var(--steel);display:block;margin-bottom:5px}
+
+/* ---------- data ---------- */
+.scroll{overflow-x:auto;margin:22px 0;border:1px solid var(--rule);background:var(--paper-2)}
+table{border-collapse:collapse;width:100%;font-family:"IBM Plex Mono",monospace;font-size:13px;min-width:430px}
+th{
+  text-align:left;font-weight:500;font-size:11px;letter-spacing:.04em;color:var(--ink-soft);
+  padding:11px 15px;border-bottom:1px solid var(--rule);white-space:nowrap;vertical-align:bottom;
+}
+td{padding:8px 15px;border-bottom:1px solid var(--rule-soft);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+tr.mark td{background:var(--hot-bg);color:var(--hot);font-weight:500}
+table.claims{min-width:520px}
+table.claims td{white-space:normal;font-family:"Spectral",serif;font-size:15px;line-height:1.5}
+table.claims td.v{font-family:"IBM Plex Mono",monospace;font-size:11.5px;font-weight:500;white-space:nowrap;vertical-align:top;padding-top:11px}
+td.v.no{color:var(--hot)} td.v.part{color:var(--steel)} td.v.ok{color:var(--ok)}
+figcaption{font-size:12px;line-height:1.6;color:var(--ink-soft);padding:12px 15px;border-top:1px solid var(--rule);margin:0}
+figure{margin:22px 0}
+figure .scroll{margin:0;border-bottom:0}
+code{
+  font-size:.875em;background:var(--paper-2);border:1px solid var(--rule-soft);
+  padding:1px 4px;font-weight:400;white-space:nowrap;
+}
+pre{
+  margin:20px 0;padding:16px 18px;overflow-x:auto;background:var(--paper-2);
+  border:1px solid var(--rule);font-size:13px;line-height:1.7;
+}
+pre code{background:none;border:0;padding:0;white-space:pre}
+.eq{
+  margin:20px 0;padding:15px 18px;background:var(--paper-2);border-left:2px solid var(--rule);
+  font-family:"IBM Plex Mono",monospace;font-size:13.5px;line-height:1.85;overflow-x:auto;
+}
+.eq span{display:block;white-space:pre}
+.eq .lbl{color:var(--ink-soft);font-size:11px;letter-spacing:.04em;margin-bottom:7px}
+ul{max-width:66ch;padding-left:20px;margin:0 0 17px}
+li{margin-bottom:9px}
+.route{border:1px solid var(--rule);background:var(--paper-2);padding:24px 26px;margin:0 0 20px}
+.route h3{font-size:17px;font-weight:600;margin:0 0 12px;letter-spacing:-.01em}
+.route p:last-child{margin-bottom:0}
+.end{margin-top:70px;padding-top:22px;border-top:2px solid var(--ink);font-family:"IBM Plex Mono",monospace;font-size:12px;line-height:1.85;color:var(--ink-soft);max-width:66ch}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="mast">
+  <svg viewBox="0 0 900 132" preserveAspectRatio="none" aria-hidden="true">
+    <g stroke="currentColor" stroke-width="0.6" fill="none" opacity="0.55">
+      <path d="M0 8 C 180 8, 300 20, 340 46 C 380 72, 520 92, 900 100"/>
+      <path d="M0 22 C 180 22, 302 32, 344 54 C 386 76, 524 96, 900 106"/>
+      <path d="M0 38 C 180 38, 306 46, 350 63 C 394 80, 528 100, 900 112"/>
+      <path d="M0 58 C 180 58, 312 62, 358 73 C 404 84, 534 104, 900 119"/>
+      <path d="M0 84 C 190 84, 320 84, 368 88 C 416 92, 542 110, 900 126"/>
+      <path d="M0 114 C 200 114, 330 110, 380 108 C 430 106, 550 120, 900 131"/>
+      <path d="M40 0 C 44 40, 52 66, 90 132"/><path d="M110 0 C 116 40, 126 66, 168 132"/>
+      <path d="M180 0 C 188 40, 200 66, 244 132"/><path d="M250 0 C 260 42, 272 68, 316 132"/>
+      <path d="M310 0 C 322 44, 334 70, 376 132"/><path d="M344 0 C 354 46, 364 72, 404 132"/>
+      <path d="M374 0 C 384 48, 392 74, 430 132"/><path d="M404 0 C 414 50, 422 76, 458 132"/>
+      <path d="M444 0 C 454 52, 462 78, 496 132"/><path d="M500 0 C 510 54, 518 80, 550 132"/>
+      <path d="M570 0 C 580 56, 588 82, 618 132"/><path d="M650 0 C 660 58, 668 84, 696 132"/>
+      <path d="M740 0 C 750 60, 758 86, 784 132"/><path d="M840 0 C 850 62, 856 88, 880 132"/>
+    </g>
+  </svg>
+  <div class="inner">
+    <h1>Verification of the VAR adaptive simulator against the 1998 thesis</h1>
+    <p class="deck">Two questions were asked: does the Python code solve the model derived in chapter 4, and is the published solution converged. Both were tested numerically rather than by reading.</p>
+    <p class="meta">
+      <b>Thesis</b> &nbsp;R. Polton, <i>Numerical Grid Generation And Its Application In The Solution Of A Model Of The Vacuum-Arc Remelting (VAR) Process</i>, University of Southampton, 1998<br>
+      <b>Code</b> &nbsp;<code>VAR_Adaptive_Simulator.py</code>, <code>BrackbillSaltzmanSolver.py</code><br>
+      <b>Result</b> &nbsp;<code>var_sim_FINAL_CONVERGED_RESULTS_…adapt_weight_25_0.png</code><br>
+      <b>Draft</b> &nbsp;<code>white-paper.html</code>
+    </p>
+  </div>
+</header>
+
+<section class="verdict">
+  <div class="vrow">
+    <div class="vq">
+      <span class="q">Question 1</span>
+      <p>Does the code discretise the equations derived in chapter 4 of the thesis?</p>
+    </div>
+    <div class="vans no"><span class="dot"></span>No</div>
+  </div>
+  <div class="vrow">
+    <div class="vq">
+      <span class="q">Question 2</span>
+      <p>Is the solution in the figure a converged steady state of the system the code does solve?</p>
+    </div>
+    <div class="vans no"><span class="dot"></span>No</div>
+  </div>
+</section>
+
+<p class="lede">Both answers are demonstrable rather than a matter of judgement, and both have specific, tractable causes. The adaptive mesh generator — the part closest to your original work — does behave correctly, and is the one component that survives testing intact.</p>
+
+<h2><span class="n">Part 1</span>Where the code departs from the model</h2>
+
+<p>Nine departures are listed, heaviest first. F1 and F3 are the ones that change what the simulator is; the rest are individually repairable.</p>
+
+<div class="f">
+  <div class="rail"><span class="id">F1</span><span class="tag block">blocking</span></div>
+  <div>
+    <h3>The discrete operator is not a consistent approximation to the transformed equations</h3>
+    <p>Equation (4.55) of the thesis, with the coefficients of (4.56), is</p>
+    <div class="eq">
+      <span class="lbl">thesis (4.55), multiplied through by J</span>
+      <span>α φ_ξξ − 2β φ_ξη + γ φ_ηη  +  J (Δ₁ φ_ξ + Γ₁ φ_η)  =  R ω J²</span>
+    </div>
+    <p>All four solvers implement only the first three terms. The first-derivative group carries two things: the <span style="white-space:nowrap">−φ_R/R</span> of the axisymmetric operator, and every contribution from grid non-uniformity (the second derivatives of R and Z in Δ₁ and Γ₁). Dropping it means the code is applying a Cartesian Laplacian on a curvilinear mesh.</p>
+    <p>The consequence is not a small error. A manufactured solution φ = R²(1−R)sin(πZ/1.5) was pushed through three operators and compared against the exact value of φ_ZZ + R(φ_R/R)_R, away from the axis:</p>
+    <figure>
+      <div class="scroll"><table>
+        <thead><tr><th class="num">N</th><th class="num">as coded</th><th class="num">sign and R restored</th><th class="num">full operator</th></tr></thead>
+        <tbody>
+          <tr><td class="num">50</td><td class="num">1.71</td><td class="num">3.95</td><td class="num">1.9&times;10⁻²</td></tr>
+          <tr><td class="num">100</td><td class="num">1.72</td><td class="num">4.00</td><td class="num">4.9&times;10⁻³</td></tr>
+          <tr><td class="num">200</td><td class="num">1.73</td><td class="num">4.02</td><td class="num">1.2&times;10⁻³</td></tr>
+          <tr><td class="num">400</td><td class="num">1.74</td><td class="num">4.03</td><td class="num">3.1&times;10⁻⁴</td></tr>
+        </tbody>
+      </table></div>
+      <figcaption>Relative error in max-norm, smoothly stretched mesh. The coded stencil sits at 174% and does not move with refinement — the signature of a missing term rather than truncation error. The complete operator converges at second order, ratio 4 per doubling.</figcaption>
+    </figure>
+    <p>Because the error does not decay, no amount of mesh refinement or adaptation recovers the thesis equations. This is why a mesh-refinement study would have caught it immediately.</p>
+    <div class="fix">
+      <b>Fix</b>
+      <p>Evaluate the diffusion operator in conservative form, which needs no explicit Δ₁ and Γ₁ and stays second order on any smooth mesh:</p>
+      <p style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink)">∇²φ = (1/J)[ ∂_ξ((α φ_ξ − β φ_η)/J) + ∂_η((γ φ_η − β φ_ξ)/J) ]</p>
+      <p>with the fluxes formed at cell faces, then subtract φ_R/R using φ_R = (φ_ξ Z_η − φ_η Z_ξ)/J. The same treatment applies to the vorticity, temperature and induction equations; the induction equation is cleanest in the thesis substitution G = FR of (4.57).</p>
+    </div>
+  </div>
+</div>
+
+<div class="f">
+  <div class="rail"><span class="id">F2</span><span class="tag block">blocking</span></div>
+  <div>
+    <h3>The stream function source term has the wrong sign and is missing its factor of R</h3>
+    <p>The thesis requires the vorticity source to enter as <code>− R·ω·J²</code>. <code>solve_stream_function</code> forms <code>rhs = laplacian + omega*j2</code>, so the coupling arrives with the opposite sign and without the radius weighting. Sign alone reverses the sense of the circulation; the missing R distorts its radial distribution, most strongly near the axis where the driving happens.</p>
+  </div>
+</div>
+
+<div class="f">
+  <div class="rail"><span class="id">F3</span><span class="tag block">blocking</span></div>
+  <div>
+    <h3>The magnetic field is identically zero, so the Lorentz force never acts</h3>
+    <p><code>solve_magnetic_induction</code> imposes F = 0 on the top, right and bottom boundaries and a zero-gradient condition on the axis. The arc condition of the thesis, F = (1−e^−(R/R₀)²)/2R on AC — equation (4.32), the only source in the problem — is not applied. The code comment at that line notes the omission.</p>
+    <p>With homogeneous data on a homogeneous operator, F ≡ 0 is the only solution. Seeding the solver with the thesis arc profile and iterating confirms it:</p>
+    <figure>
+      <div class="scroll"><table>
+        <thead><tr><th class="num">sweeps</th><th class="num">max |F|</th></tr></thead>
+        <tbody>
+          <tr><td class="num">seed</td><td class="num">6.38&times;10⁻¹</td></tr>
+          <tr><td class="num">100</td><td class="num">6.08&times;10⁻¹</td></tr>
+          <tr><td class="num">1 000</td><td class="num">3.27&times;10⁻¹</td></tr>
+          <tr><td class="num">5 000</td><td class="num">2.41&times;10⁻²</td></tr>
+          <tr><td class="num">20 000</td><td class="num">8.73&times;10⁻⁷</td></tr>
+        </tbody>
+      </table></div>
+      <figcaption>Under-relaxation removed so the fixed point is reached in reasonable time. In the production run F is initialised to zero and never leaves it.</figcaption>
+    </figure>
+    <p>Everything downstream follows: <code>lorentz</code> is zero at every node and every step. The magnetic pinch, the electromagnetically driven secondary circulation and the opposition between Lorentz and Marangoni forcing described in the draft did not occur in this simulation. The single vortex in the right-hand panel of the figure is driven by the Marangoni boundary condition and buoyancy alone.</p>
+    <div class="fix">
+      <b>Fix</b>
+      <p>Apply (4.32) on AC, F = 0 on OA, F_Z = 0 on OD and F + R·F_R = 0 on DC. Until that is in place the electromagnetic coupling cannot be claimed.</p>
+    </div>
+  </div>
+</div>
+
+<div class="f">
+  <div class="rail"><span class="id">F4</span><span class="tag block">blocking</span></div>
+  <div>
+    <h3>update_velocities returns the wrong velocity components</h3>
+    <p>The thesis has U = (1/R)∂φ/∂Z and W = −(1/R)∂φ/∂R. <code>update_velocities</code> takes raw ξ- and η-differences with no metric transformation and assigns them to the opposite components. Against an analytic stream function on a uniform mesh:</p>
+    <figure>
+      <div class="scroll"><table>
+        <thead><tr><th>correlation</th><th class="num">U_true</th><th class="num">W_true</th></tr></thead>
+        <tbody>
+          <tr><td>U_comp</td><td class="num">0.0000</td><td class="num">−1.0000</td></tr>
+          <tr><td>W_comp</td><td class="num">−1.0000</td><td class="num">0.0000</td></tr>
+        </tbody>
+      </table></div>
+      <figcaption>Perfect anti-correlation off the diagonal: the two components are swapped and sign-reversed. They are also scaled by the local grid spacing rather than the Jacobian, which makes them roughly two orders of magnitude too small.</figcaption>
+    </figure>
+    <p>These arrays feed the convection terms of the vorticity and induction equations. Because they are so small, the vorticity equation has been running essentially diffusion-dominated regardless of the Grashof number. <code>solve_temperature</code> does not use them — it recomputes U and W correctly from the metrics — so the energy equation advects on one velocity field while the vorticity equation advects on another.</p>
+    <div class="fix">
+      <b>Fix</b>
+      <p>Delete the body of <code>update_velocities</code> and lift the block already written correctly in <code>solve_temperature</code> (lines 55–60) into it, so all three solvers share one velocity field.</p>
+    </div>
+  </div>
+</div>
+
+<div class="f">
+  <div class="rail"><span class="id">F5</span><span class="tag block">blocking</span></div>
+  <div>
+    <h3>Wall vorticity is set to zero instead of being computed from the stream function</h3>
+    <p><code>solve_vorticity</code> ends with <code>omega[:,0] = omega[-1,:] = 0</code>. The thesis is explicit that vorticity cannot be prescribed on the no-slip surfaces and must instead satisfy the limiting form of (4.9): ω = φ_RR/R on DC by (4.45), and ω = φ_ZZ/R on OD by (4.46). Forcing zero there removes the vorticity generated at the crucible wall and baseplate, which is a principal source in a recirculating melt pool.</p>
+  </div>
+</div>
+
+<div class="f">
+  <div class="rail"><span class="id">F6</span><span class="tag block">blocking</span></div>
+  <div>
+    <h3>The liquid-fraction mask replaces the D'Arcy term and breaks the ψ–ω relation</h3>
+    <p>The thesis suppresses motion in the solid through the D'Arcy coefficient C = 10¹⁰(1 − H(θ−1)) inside the vorticity equation, where it acts as a sink and leaves the equation itself intact. The code instead multiplies the solved fields by <code>liquid_fraction</code> after the fact.</p>
+    <p>For the vorticity this is a defensible enthalpy-porosity variant. For the stream function it is not: multiplying ψ after the Poisson solve means the returned ψ is no longer a solution of its own equation, so ω and ψ are no longer consistent anywhere the mask is active. The saw-toothed closed contour visible near R ≈ 0.1–0.3, Z ≈ 0.6–0.8 in the streamline panel is what that inconsistency looks like on a plot — a converged smooth field would not produce it.</p>
+    <p>Two smaller points in the same lines. The docstring says the ramp runs from 0.95 to 1.05 but the expression <code>clip((θ−0.85)/0.15, 0, 1)</code> runs from 0.85 to 1.00. And since the published field has θ ≥ 0.88 everywhere, the mask never falls below 0.2 — nothing in the domain is damped to zero, so the draft's claim that flow is held "strictly zero within the solid ingot" does not describe this run.</p>
+  </div>
+</div>
+
+<div class="f">
+  <div class="rail"><span class="id">F7</span><span class="tag block">blocking</span></div>
+  <div>
+    <h3>The thermal boundary conditions omit radiation, which removes the physical equilibrium</h3>
+    <p>Conditions (4.47) on AC and (4.50) on DC both carry a Stefan radiation term in θ⁴ alongside the convective loss. The code applies a bare Gaussian Neumann flux on the top with no loss term at all, and a linear <code>Bi = 0.2</code> convective condition on the side and base.</p>
+    <p>Radiation is what bounds the surface temperature in this problem. Without it the only heat sink is weak linear convection, and the equilibrium temperature is correspondingly absurd — see F11, where the exact steady state of the code's own discrete energy equation peaks at θ ≈ 62. Reinstating the θ⁴ terms is the single change that would most improve physical realism, and it also removes the need for the hot-start patch.</p>
+  </div>
+</div>
+
+<div class="f">
+  <div class="rail"><span class="id">F8</span><span class="tag adv">advisory</span></div>
+  <div>
+    <h3>The Lorentz term carries 1/R² where the thesis has 1/(A²R)</h3>
+    <p>Equation (4.41) gives the electromagnetic source as (1/A²R)(F²)_Z, with A the Alfvén number A² = ρμν²/(B₀²a²). The code uses <code>-S_lor * dF2_dZ / R**2</code> with <code>S_lor = 50.0</code> chosen by hand, and the comment acknowledges the value was not taken from the thesis. The radial power differs and the coefficient has no derivation behind it. Currently moot because of F3, but it needs settling before the electromagnetics is switched on.</p>
+  </div>
+</div>
+
+<div class="f">
+  <div class="rail"><span class="id">F9</span><span class="tag adv">advisory</span></div>
+  <div>
+    <h3>The grid generator is not the Brackbill–Saltzman method</h3>
+    <p>Section 3.1 of the thesis defines Brackbill–Saltzman as the minimisation of I = I_s + λ_o I_o + λ_v I_v, with the orthogonality integral (3.12) and the volume-weighted integral (3.17) each contributing their own Euler–Lagrange equations, (3.14) and (3.21), and with λ_o = O(1/Δx⁴) and λ_v = O(1/WΔx⁴).</p>
+    <p><code>relax_grid</code> contains none of that. What it solves is</p>
+    <div class="eq">
+      <span class="lbl">as implemented</span>
+      <span>α R_ξξ − 2β R_ξη + γ R_ηη + w·|J|·(P R_ξ + Q R_η) = 0,   P = W_ξ/W,  Q = W_η/W</span>
+    </div>
+    <p>which is Thompson–Thames–Mastin Poisson grid generation with control functions derived from a monitor function — a legitimate and well-established adaptive method, and arguably a better-conditioned one here, but a different method with a different provenance. The comment describing the 2β r_ξη term as a "non-orthogonality penalty" is also misplaced: that term is part of the transformed Laplacian, not an orthogonality functional.</p>
+    <p>Two implementation notes. The standard form carries J², not |J|; with Δξ = Δη = 1 and J ≈ 1.5×10⁻⁴ that difference scales the forcing by about 6 600, which is why the substitution was needed and why it works. It is an empirical rescaling, not a dimensional correction, and the resulting equation is no longer the stationarity condition of any stated functional. Separately, the 10% proportional limiter does not alter the fixed point — at convergence the shift is zero and the clip is inactive — so it is safe, but it constrains the path rather than preventing checkerboarding, which is a different phenomenon.</p>
+    <div class="fix">
+      <b>Fix</b>
+      <p>Rename the class and describe it as monitor-function Poisson grid generation after Thompson, Thames and Mastin, with the |J| scaling stated as the empirical choice it is. The method does not need defending; it needs labelling.</p>
+    </div>
+  </div>
+</div>
+
+<h2><span class="n">Part 2</span>Convergence</h2>
+
+<p class="lede">The steady-state detector is measuring the wrong quantity, and as a result it fires when the solution is at a small fraction of its eventual amplitude.</p>
+
+<div class="f">
+  <div class="rail"><span class="id">F10</span><span class="tag block">blocking</span></div>
+  <div>
+    <h3>The tolerance is applied to the under-relaxed increment, not to a residual</h3>
+    <p><code>solve_temperature</code> returns <code>max|θ_new − θ_old|</code> after the update <code>θ_new = 0.995 θ_old + 0.005 θ_temp</code>. The returned number is therefore exactly 1/200 of the change the solver actually wanted to make. <code>solve_magnetic_induction</code> deflates by 1/100 the same way. Passing <code>steady_tolerance = 1e-4</code> on the thermal field means the true update was still 2×10⁻².</p>
+    <p>An increment is not a residual. For a diffusion problem relaxing towards equilibrium the increment decays smoothly towards zero from the very first sweep, long before the solution arrives, so an increment-based test with heavy under-relaxation will always report convergence early.</p>
+  </div>
+</div>
+
+<div class="f">
+  <div class="rail"><span class="id">F11</span><span class="tag block">blocking</span></div>
+  <div>
+    <h3>The published field is at roughly 2% of the steady state of the system that produced it</h3>
+    <p>To separate the convergence question from the modelling question, the energy equation was run alone — the code's own solver, its own boundary conditions, <code>Nu_base = 40</code>, <code>Bi = 0.2</code>, uniform 100×100, no flow — starting from the driver's hot-start patch. In parallel, the same discrete system was assembled as a sparse linear system and solved directly for its exact steady state.</p>
+    <figure>
+      <div class="scroll"><table>
+        <thead><tr><th class="num">sweeps</th><th class="num">θ max</th><th class="num">res_T reported</th><th class="num">true increment</th></tr></thead>
+        <tbody>
+          <tr><td class="num">1</td><td class="num">1.10</td><td class="num">2.75&times;10⁻³</td><td class="num">5.50&times;10⁻¹</td></tr>
+          <tr><td class="num">1 000</td><td class="num">1.76</td><td class="num">2.96&times;10⁻⁴</td><td class="num">5.93&times;10⁻²</td></tr>
+          <tr class="mark"><td class="num">10 000</td><td class="num">3.01</td><td class="num">9.33&times;10⁻⁵</td><td class="num">1.87&times;10⁻²</td></tr>
+          <tr><td class="num">50 000</td><td class="num">5.26</td><td class="num">3.96&times;10⁻⁵</td><td class="num">7.91&times;10⁻³</td></tr>
+          <tr><td class="num">150 000</td><td class="num">7.91</td><td class="num">1.89&times;10⁻⁵</td><td class="num">3.78&times;10⁻³</td></tr>
+          <tr><td class="num">400 000</td><td class="num">11.09</td><td class="num">9.28&times;10⁻⁶</td><td class="num">1.86&times;10⁻³</td></tr>
+          <tr><td class="num">exact</td><td class="num">61.65</td><td class="num">0</td><td class="num">0</td></tr>
+        </tbody>
+      </table></div>
+      <figcaption>Highlighted row: the reported residual crosses the 10⁻⁴ tolerance after about 10 000 sweeps, with θ still climbing and at 5% of its final value. After 400 000 sweeps the reported residual is an order of magnitude below tolerance and the field has reached 18%.</figcaption>
+    </figure>
+    <p>The figure's thermal panel spans θ ∈ [0.88, 1.53]. Against an exact steady state of θ_max = 61.65 that is about 2%. The field is not near equilibrium; it is early in a very slow transient, held there by the 0.005 under-relaxation factor.</p>
+    <p>The absurd equilibrium value is itself a consequence of F7 — remove radiation and there is almost nothing to balance a Nusselt number of 40. That is a separate problem from the convergence one, but it explains why the transient is so long: the solver is climbing towards a target two orders of magnitude away from where the physics should sit.</p>
+  </div>
+</div>
+
+<div class="f">
+  <div class="rail"><span class="id">F12</span><span class="tag adv">advisory</span></div>
+  <div>
+    <h3>The loaded checkpoint indicates the previous run exhausted its step budget</h3>
+    <p>Two distinct files are written on exit. The steady-state branch writes <code>var_sim_FINAL_steady_state_step_{step}.npz</code>; loop exhaustion writes <code>var_sim_FINAL_step_{step}.npz</code>. The driver loads <code>var_sim_FINAL_step_149999.npz</code> — the second form, at the last index of a 150 000-step budget. The run that produced the initial condition for the published result did not trip the steady-state detector.</p>
+  </div>
+</div>
+
+<div class="f">
+  <div class="rail"><span class="id">F13</span><span class="tag block">blocking</span></div>
+  <div>
+    <h3>The mesh in the figure is a partially relaxed grid, not a solution of the grid equation</h3>
+    <p>The driver calls <code>relax_grid</code> with its default 300 inner sweeps. Continuing the relaxation from that point on a 40×40 test case with a sharp monitor bump:</p>
+    <figure>
+      <div class="scroll"><table>
+        <thead><tr><th class="num">cumulative sweeps</th><th class="num">relative residual</th><th class="num">min cell area</th></tr></thead>
+        <tbody>
+          <tr><td class="num">100</td><td class="num">2.52&times;10⁻¹</td><td class="num">2.77&times;10⁻⁴</td></tr>
+          <tr class="mark"><td class="num">300</td><td class="num">6.67&times;10⁻²</td><td class="num">3.34&times;10⁻⁵</td></tr>
+          <tr><td class="num">600</td><td class="num">2.21&times;10⁻²</td><td class="num">5.82&times;10⁻⁶</td></tr>
+          <tr><td class="num">1 200</td><td class="num">1.22&times;10⁻²</td><td class="num">1.80&times;10⁻⁶</td></tr>
+          <tr><td class="num">2 400</td><td class="num">5.57&times;10⁻³</td><td class="num">1.49&times;10⁻⁶</td></tr>
+          <tr><td class="num">4 800</td><td class="num">2.90&times;10⁻³</td><td class="num">1.43&times;10⁻⁶</td></tr>
+        </tbody>
+      </table></div>
+      <figcaption>At the production setting of 300 sweeps the grid equation still carries a 6.7% residual, and the minimum cell area falls by a further factor of 23 as relaxation continues.</figcaption>
+    </figure>
+    <p>The minimum Jacobian quoted in the draft, 5.38×10⁻⁵ against a uniform 1.53×10⁻⁴, is therefore a property of where the iteration was stopped rather than a property of the adapted mesh. The converged mesh clusters considerably harder. Either iterate the grid to a stated residual, or state the sweep count as part of the method and note that the mesh is deliberately under-relaxed.</p>
+  </div>
+</div>
+
+<div class="f">
+  <div class="rail"><span class="id">F14</span><span class="tag adv">advisory</span></div>
+  <div>
+    <h3>There is no mesh-independence evidence, and remapping injects error each epoch</h3>
+    <p>One mesh, one set of parameters. A convergence claim needs the same quantity — pool depth, max |ψ|, a global heat balance — computed at 50², 100² and 200² and shown to settle. This is also the cheapest possible detector for F1: an inconsistent operator refuses to converge under refinement, which is exactly what the table in F1 shows.</p>
+    <p>Separately, <code>remap_physics</code> runs <code>scipy.interpolate.griddata</code> with linear interpolation at every adaptation epoch. Linear interpolation is diffusive, and 150 epochs of it is a meaningful amount of smoothing applied to the very gradients the adaptation exists to sharpen. Worth quantifying by remapping onto an unchanged mesh and measuring what the round trip costs.</p>
+  </div>
+</div>
+
+<div class="f">
+  <div class="rail"><span class="id">F15</span><span class="tag adv">advisory</span></div>
+  <div>
+    <h3>The figure filename records a parameter the run did not use</h3>
+    <p>The output is named for <code>adapt_weight = 25.0</code>. That value appears only in <code>step()</code>, which the driver never calls. The executed path is <code>sim.grid_solver.relax_grid(sim.R, sim.Z, W_monitor)</code>, taking the default <code>adapt_weight = 1.0</code>. Worth resolving before anything is archived under a DOI.</p>
+  </div>
+</div>
+
+<h2><span class="n">Part 3</span>What holds up</h2>
+
+<div class="f">
+  <div class="rail"><span class="id">F16</span><span class="tag good">verified</span></div>
+  <div>
+    <h3>The adaptive grid generator works, and works well</h3>
+    <p>Driven with a Gaussian monitor bump at (R, Z) = (0.3, 1.1) on a 40×40 mesh:</p>
+    <figure>
+      <div class="scroll"><table>
+        <thead><tr><th>region</th><th class="num">mean cell area</th><th class="num">vs uniform</th></tr></thead>
+        <tbody>
+          <tr><td>uniform baseline</td><td class="num">9.86&times;10⁻⁴</td><td class="num">1.00</td></tr>
+          <tr><td>inside the bump</td><td class="num">2.96&times;10⁻⁴</td><td class="num">0.30</td></tr>
+          <tr><td>away from the bump</td><td class="num">1.00&times;10⁻³</td><td class="num">1.02</td></tr>
+        </tbody>
+      </table></div>
+      <figcaption>Clustering is in the correct direction and the correct place, compression is a factor of 3.4, cells elsewhere are essentially undisturbed, and the minimum Jacobian stays positive throughout — no folding.</figcaption>
+    </figure>
+    <p>The monitor blending vorticity magnitude with temperature-gradient magnitude tracks both the vortex and the phase front, the four-pass smoothing of W does remove the forcing discontinuities it is meant to, and the corner locks and boundary sliding hold the domain shape. This component is sound, and it is the part of the work closest to the thesis.</p>
+    <p>One practical note. <code>relax_grid</code> runs a doubly-nested Python loop: 300 sweeps over 100×100 interior nodes is three million iterations per epoch, and 40×40 already takes four seconds here. A red-black Gauss–Seidel rewrite using array slicing gives the same fixed point at roughly a hundred times the speed, which makes both the 4 800-sweep relaxations of F13 and the mesh-refinement study of F14 cheap.</p>
+  </div>
+</div>
+
+<h2><span class="n">Part 4</span>Claims in the current draft</h2>
+
+<p>Each load-bearing claim in <code>white-paper.html</code>, against what the code and the run support.</p>
+
+<div class="scroll"><table class="claims">
+  <thead><tr><th>Claim</th><th class="num">Status</th></tr></thead>
+  <tbody>
+    <tr><td>Streamlines show "electromagnetically driven secondary circulation"</td><td class="v no">not supported — F3</td></tr>
+    <tr><td>"Lorentz forces simultaneously push the interior fluid downward"</td><td class="v no">not supported — F3</td></tr>
+    <tr><td>Vorticity peaked above 46 000 through "violent opposition" of Marangoni and magnetic pinch</td><td class="v part">peak may be real, the attributed cause is not — F3</td></tr>
+    <tr><td>Solves "the magnetic induction equation for the magnetic flux function F"</td><td class="v no">solves it with no source; F ≡ 0 — F3</td></tr>
+    <tr><td>Flow damped "to strictly zero within the solid ingot"</td><td class="v no">mask never falls below 0.2 in this run — F6</td></tr>
+    <tr><td>Residuals "smoothly converge to steady-state tolerances"</td><td class="v no">tolerance measures the under-relaxed increment — F10, F11</td></tr>
+    <tr><td>"Successful convergence of a highly driven VAR melt pool"</td><td class="v no">roughly 2% of steady state — F11</td></tr>
+    <tr><td>Min J from 1.53&times;10⁻⁴ to 5.38&times;10⁻⁵, "nearly 300% increase in grid density"</td><td class="v part">arithmetic is 2.8&times;, i.e. 184%; and the value reflects a stopped iteration — F13</td></tr>
+    <tr><td>Uses a "custom Brackbill-Saltzman dynamic mesh generator"</td><td class="v no">Thompson-type Poisson generation with monitor control functions — F9</td></tr>
+    <tr><td>"Dimensional balancing" by |J| prevents a "dimensional decay trap"</td><td class="v part">the rescaling works; the justification is not a dimensional argument — F9</td></tr>
+    <tr><td>Proportional limiter "prevents checkerboarding"</td><td class="v part">it does bound the step and preserve the fixed point, but that is not what it does — F9</td></tr>
+    <tr><td>Grid compresses "without any node-crossing or geometric folding"</td><td class="v ok">confirmed — F16</td></tr>
+    <tr><td>Mesh clusters automatically around vorticity and thermal gradients</td><td class="v ok">confirmed, factor 3.4 — F16</td></tr>
+    <tr><td>Pure-Python, NumPy/SciPy only, transparent and readable</td><td class="v ok">confirmed</td></tr>
+  </tbody>
+</table></div>
+
+<p>Two housekeeping items. The header carries <code>10.5281/zenodo.20395773</code> while the citation block still reads <code>10.XXXX/zenodo.XXXXXXX</code>. And section 4.3 ends mid-sentence at "steady-state tolerances ($" — an unescaped <code>&lt;</code> is swallowing the rest of the paragraph.</p>
+
+<p>The vorticity transport equation printed in section 2.1 also needs replacing. It mixes ξ and η derivatives on the left with a physical ∇² and ∂θ/∂R on the right, and carries dimensional ν and gβ_T alongside non-dimensional θ. The thesis already has the correct non-dimensional form in (4.41), and quoting it directly is both simpler and defensible.</p>
+
+<h2><span class="n">Part 5</span>Two honest routes to a technical note</h2>
+
+<p>There is a real, publishable contribution in this work. It is not the one the current draft claims, and the gap is not a matter of wording — the electromagnetics did not run, and the fields are not converged. Publishing the draft as it stands under a DOI would put a claim on permanent record that the attached code contradicts.</p>
+
+<div class="route">
+  <h3>Route A — a methods note on the adaptive mesh generator</h3>
+  <p>Publishable now, because the component is verified. The note would cover monitor-function Poisson grid generation applied to a VAR-type melt pool: the blended vorticity and temperature-gradient monitor, the smoothing of W, the |J| scaling and why the standard J² form fails at Δξ = Δη = 1, the proportional limiter and its effect on the iteration path, and the clustering and fold-freedom measurements of F16 with a grid-equation residual history.</p>
+  <p>The multiphysics solver appears as the thing supplying the monitor function, described as a work in progress, with no claims about the accuracy or convergence of the physics. That framing is fully supported by what exists today, and it sits naturally against your thesis, where the corresponding tests on Brackbill–Saltzman orthogonality were the ones that did not work.</p>
+</div>
+
+<div class="route">
+  <h3>Route B — the full VAR result, after repair</h3>
+  <p>The stronger note and the one that answers the question you set out to answer, but it needs F1–F7 fixed first. In rough order of effort: the conservative operator of F1, which is mostly a rewrite of four similar functions; the arc condition of F3 and the radiation terms of F7, which are boundary-condition edits; F2, F4 and F5, which are a few lines each; and F6, which needs the D'Arcy term moved back inside the vorticity equation.</p>
+  <p>Then a residual-based convergence criterion in place of the increment test, and a three-mesh refinement study. If the pool shape settles under refinement, you have a genuine convergence result on the thesis equations — and, given that the thesis records this as the case that did not converge, that is a result worth stating plainly rather than dressing up as a software announcement.</p>
+</div>
+
+<h2><span class="n">Appendix</span>Reproducing these checks</h2>
+
+<p>Every number above comes from one of five short scripts, each self-contained apart from your two modules.</p>
+
+<ul>
+  <li><b>F1</b> — manufactured solution φ = R²(1−R)sin(πZ/1.5) on uniform and stretched meshes at N = 50, 100, 200, 400; compares the coded stencil, the sign-and-R-corrected stencil, and the conservative operator against the analytic value of φ_ZZ + φ_RR − φ_R/R, restricted to R &gt; 0.1.</li>
+  <li><b>F3</b> — seeds <code>self.F</code> with the thesis AC profile, sets <code>relax_F = 1.0</code>, iterates <code>solve_magnetic_induction</code> and reports max |F| and the imposed boundary values.</li>
+  <li><b>F4</b> — sets ψ = R²(1−R)sin(πZ/1.5) on a uniform mesh, calls <code>update_velocities</code>, and correlates the result against U = ψ_Z/R and W = −ψ_R/R.</li>
+  <li><b>F11</b> — runs <code>solve_temperature</code> alone with ψ = 0 from the driver's hot start; separately assembles the identical discrete system, including all four one-sided boundary rows in the same precedence the code applies them, and solves it with <code>scipy.sparse.linalg.spsolve</code>.</li>
+  <li><b>F13, F16</b> — calls <code>relax_grid</code> in increasing chunks against a Gaussian monitor and reports the relative residual of the grid equation, the minimum cell area, and mean cell area inside and outside the bump.</li>
+</ul>
+
+<p>They are small enough to belong in a <code>tests/</code> directory in the repository, and F1 and F11 in particular are the two that would have flagged both headline problems before the run was ever archived.</p>
+
+<p class="end">
+Prepared from my_thesis.pdf (202 pp.), VAR_Adaptive_Simulator.py (681 lines),<br>
+BrackbillSaltzmanSolver.py (170 lines), white-paper.html, and the three-panel result figure.<br>
+Equation numbers refer to the thesis throughout.
+</p>
+
+</div>
+</body>
+</html>

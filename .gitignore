@@ -1,0 +1,19 @@
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+
+# run artefacts (regenerate with src/run_*.py)
+checkpoint*.npz
+state_N*.npz
+state_uniform.npz
+var_result.npz
+highres.json
+*.log
+nohup.out
+
+.DS_Store
+.idea/
+.vscode/

@@ -1,0 +1,290 @@
+{
+  "m": 101,
+  "n": 101,
+  "target_viscosity_factor": 12.0,
+  "continuation": [
+    {
+      "viscosity_factor": 100.0,
+      "Gr": 2900000.0,
+      "Ma": 900.0,
+      "A": 0.06,
+      "converged": true,
+      "sweeps": 150,
+      "residuals": {
+        "theta": 4.761575343065023e-09,
+        "omega": 1.9068310887729806e-05,
+        "psi": 2.84398017145059e-15,
+        "G": 2.2194581783075234e-16
+      },
+      "diagnostics": {
+        "theta_max": 1.209659592525308,
+        "theta_surface_axis": 1.209659592525308,
+        "psi_max": 1.6922208891858583,
+        "omega_max": 1534.1628619646076,
+        "pool_depth_axis": 0.15265820371876515,
+        "pool_depth_max": 0.1499999999999999,
+        "molten_fraction": 0.05597490442113518,
+        "min_jacobian": 0.00014999999999999833
+      }
+    },
+    {
+      "viscosity_factor": 70.0,
+      "Gr": 5918367.346938776,
+      "Ma": 1836.734693877551,
+      "A": 0.041999999999999996,
+      "converged": true,
+      "sweeps": 100,
+      "residuals": {
+        "theta": 3.0168014425078565e-09,
+        "omega": 6.127599749238616e-06,
+        "psi": 3.529890283260189e-15,
+        "G": 2.2194581783075234e-16
+      },
+      "diagnostics": {
+        "theta_max": 1.1974174953496308,
+        "theta_surface_axis": 1.1974174953496308,
+        "psi_max": 2.3277946800172065,
+        "omega_max": 2415.5568524484734,
+        "pool_depth_axis": 0.13623209377812207,
+        "pool_depth_max": 0.135,
+        "molten_fraction": 0.05185766101362611,
+        "min_jacobian": 0.00014999999999999833
+      }
+    },
+    {
+      "viscosity_factor": 50.0,
+      "Gr": 11600000.0,
+      "Ma": 3600.0,
+      "A": 0.03,
+      "converged": true,
+      "sweeps": 500,
+      "residuals": {
+        "theta": 1.0709791576647356e-08,
+        "omega": 3.063624896095409e-05,
+        "psi": 4.2883557279691534e-15,
+        "G": 2.2194581783075234e-16
+      },
+      "diagnostics": {
+        "theta_max": 1.1849516433193896,
+        "theta_surface_axis": 1.1849516433193896,
+        "psi_max": 3.0210436657652036,
+        "omega_max": 3759.5529705915214,
+        "pool_depth_axis": 0.12108281457013481,
+        "pool_depth_max": 0.11999999999999988,
+        "molten_fraction": 0.047936476815998434,
+        "min_jacobian": 0.00014999999999999833
+      }
+    },
+    {
+      "viscosity_factor": 35.0,
+      "Gr": 23673469.387755103,
+      "Ma": 7346.938775510204,
+      "A": 0.020999999999999998,
+      "converged": true,
+      "sweeps": 100,
+      "residuals": {
+        "theta": 8.073952114589459e-11,
+        "omega": 4.583862017278275e-08,
+        "psi": 8.18412021439765e-15,
+        "G": 2.2194581783075234e-16
+      },
+      "diagnostics": {
+        "theta_max": 1.170834562303319,
+        "theta_surface_axis": 1.170834562303319,
+        "psi_max": 3.898330648722163,
+        "omega_max": 5871.225853521351,
+        "pool_depth_axis": 0.10563877439310176,
+        "pool_depth_max": 0.10499999999999998,
+        "molten_fraction": 0.04352514459366729,
+        "min_jacobian": 0.00014999999999999833
+      }
+    },
+    {
+      "viscosity_factor": 25.0,
+      "Gr": 46400000.0,
+      "Ma": 14400.0,
+      "A": 0.015,
+      "converged": false,
+      "sweeps": 200,
+      "residuals": {
+        "theta": 7.632504830207455e-08,
+        "omega": 0.0028032378671460204,
+        "psi": 1.3855305433732008e-14,
+        "G": 2.2194581783075234e-16
+      },
+      "diagnostics": {
+        "theta_max": 1.1565325713729786,
+        "theta_surface_axis": 1.1565325713729786,
+        "psi_max": 4.77364733450652,
+        "omega_max": 10980.253509494727,
+        "pool_depth_axis": 0.09146104373989461,
+        "pool_depth_max": 0.09000000000000008,
+        "molten_fraction": 0.04009410842074306,
+        "min_jacobian": 0.00014999999999999833
+      }
+    },
+    {
+      "viscosity_factor": 25.0,
+      "Gr": 46400000.0,
+      "Ma": 14400.0,
+      "A": 0.015,
+      "converged": false,
+      "sweeps": 1050,
+      "residuals": {
+        "theta": 9.32893684258469e-08,
+        "omega": 0.0018072863356470203,
+        "psi": 7.99957563564808e-15,
+        "G": 2.2194581783075234e-16
+      },
+      "diagnostics": {
+        "theta_max": 1.1565180318474533,
+        "theta_surface_axis": 1.1565180318474533,
+        "psi_max": 4.773663926561555,
+        "omega_max": 10980.280201687814,
+        "pool_depth_axis": 0.09144694792421282,
+        "pool_depth_max": 0.09000000000000008,
+        "molten_fraction": 0.04009410842074306,
+        "min_jacobian": 0.00014999999999999833
+      }
+    },
+    {
+      "viscosity_factor": 25.0,
+      "Gr": 46400000.0,
+      "Ma": 14400.0,
+      "A": 0.015,
+      "converged": true,
+      "sweeps": 50,
+      "residuals": {
+        "theta": 2.0970863437889505e-07,
+        "omega": 0.0003161190457642895,
+        "psi": 1.3759871800220984e-14,
+        "G": 2.2194581783075234e-16
+      },
+      "diagnostics": {
+        "theta_max": 1.156507182378321,
+        "theta_surface_axis": 1.156507182378321,
+        "psi_max": 4.773682082859952,
+        "omega_max": 10980.29683765354,
+        "pool_depth_axis": 0.09143561944473055,
+        "pool_depth_max": 0.09000000000000008,
+        "molten_fraction": 0.04009410842074306,
+        "min_jacobian": 0.00014999999999999833
+      }
+    },
+    {
+      "viscosity_factor": 18.0,
+      "Gr": 89506172.83950618,
+      "Ma": 27777.777777777777,
+      "A": 0.010799999999999999,
+      "converged": true,
+      "sweeps": 50,
+      "residuals": {
+        "theta": 1.2236971111105081e-09,
+        "omega": 1.081546610835647e-06,
+        "psi": 4.287304262337191e-14,
+        "G": 2.2194581783075234e-16
+      },
+      "diagnostics": {
+        "theta_max": 1.1417841492743452,
+        "theta_surface_axis": 1.1417841492743452,
+        "psi_max": 5.7321199984574855,
+        "omega_max": 20801.485541870923,
+        "pool_depth_axis": 0.07847538694566492,
+        "pool_depth_max": 0.07499999999999996,
+        "molten_fraction": 0.03646701303793746,
+        "min_jacobian": 0.00014999999999999833
+      }
+    },
+    {
+      "viscosity_factor": 12.0,
+      "Gr": 201388888.8888889,
+      "Ma": 62500.0,
+      "A": 0.0072,
+      "converged": true,
+      "sweeps": 50,
+      "residuals": {
+        "theta": 5.8779191473368675e-08,
+        "omega": 2.2042723712024784e-05,
+        "psi": 4.0977734030640036e-14,
+        "G": 2.2194581783075234e-16
+      },
+      "diagnostics": {
+        "theta_max": 1.1234002138482175,
+        "theta_surface_axis": 1.1234002138482175,
+        "psi_max": 7.104130350630069,
+        "omega_max": 44608.94892951218,
+        "pool_depth_axis": 0.06408786505193342,
+        "pool_depth_max": 0.06000000000000005,
+        "molten_fraction": 0.03195765121066562,
+        "min_jacobian": 0.00014999999999999833
+      }
+    }
+  ],
+  "epochs": [
+    {
+      "epoch": 1,
+      "grid_sweeps": 20,
+      "grid_residual": 1.760089254921591e-07,
+      "min_jacobian": 2.8407419208736417e-05,
+      "converged": true,
+      "sweeps": 250,
+      "residuals": {
+        "theta": 2.074789100407378e-11,
+        "omega": 2.318147131444603e-07,
+        "psi": 2.6402561924484598e-14,
+        "G": 6.981466532842877e-16
+      },
+      "diagnostics": {
+        "theta_max": 1.1284822077881798,
+        "theta_surface_axis": 1.1284822077881798,
+        "psi_max": 6.839152721641913,
+        "omega_max": 48480.14947667062,
+        "pool_depth_axis": 0.06657937413626414,
+        "pool_depth_max": 0.06515543020615544,
+        "molten_fraction": 0.107930595039702,
+        "min_jacobian": 2.8407419208736417e-05
+      }
+    }
+  ],
+  "final": {
+    "converged": false,
+    "sweeps": 500,
+    "residuals": {
+      "theta": 2.1402763447358715e-06,
+      "omega": 0.12529215102593672,
+      "psi": 3.6673432479249784e-14,
+      "G": 6.981466532842877e-16
+    },
+    "diagnostics": {
+      "superheat_volume": 0.004038901146110748,
+      "molten_volume": 0.09872496314756815,
+      "enthalpy": 3.0565681371547724,
+      "psi_volume": -2.394236539624811,
+      "kinetic_energy": 4907.094346380363,
+      "enstrophy": 12077072.135756439,
+      "theta_max": 1.136021798756855,
+      "theta_surface_axis": 1.136021798756855,
+      "psi_max": 6.22747268549828,
+      "omega_max": 47677.52662544617,
+      "min_jacobian": 2.8407419208736417e-05,
+      "pool_depth_axis": 0.07340495884133524,
+      "heat_in_AC": 2.550158325219944,
+      "heat_out_DC": 2.544132022526785,
+      "heat_out_OD": 0.0,
+      "imbalance": 0.0023631092366153757
+    }
+  },
+  "suppression": {
+    "omega_liquid_max": 47677.52662544617,
+    "omega_solid_interior_max": 0.16994280921021213,
+    "omega_ratio_interior": 280550.4207387267,
+    "speed_ratio": 13.293520476296376
+  },
+  "forces": {
+    "buoyancy_max": 152810345.53423074,
+    "lorentz_max": 18322.703316603474,
+    "ratio": 0.00011990486149708393,
+    "marangoni_vorticity_max": 48480.20002423789,
+    "max_F": 0.3988526529307711
+  }
+}

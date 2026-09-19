@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>White Paper: Adaptive-Mesh Multiphysics Simulation of VAR</title>
+    
+	<script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            font-size: 12pt;
+        }
+        h1 {
+            text-align: center;
+            font-size: 18pt;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+        .subtitle {
+            text-align: center;
+            font-style: italic;
+            font-size: 14pt;
+            margin-bottom: 40px;
+            color: #555;
+        }
+        h2 {
+            font-size: 14pt;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+        h3 {
+            font-size: 12pt;
+            margin-top: 20px;
+            margin-bottom: 5px;
+        }
+		.meta { font-style: italic; color: #555; text-align: center; }
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        .equation {
+            text-align: center;
+            margin: 20px 0;
+            padding: 10px;
+        }
+        hr {
+            border: 0;
+            border-top: 1px dashed #ccc;
+            margin: 40px 0;
+        }
+        @media print {
+            body {
+                margin: 20mm;
+                font-size: 12pt;
+            }
+            h1 { page-break-before: avoid; }
+            h2 { page-break-after: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Adaptive-Mesh Multiphysics Simulation of Vacuum Arc Remelting in Python</h1>
+    <div class="subtitle">A Clean-Code Architecture for Moving-Mesh Metallurgical CFD</div>
+    <div class="meta">
+        G. H. S. C. Research<br>
+        Zenodo DOI: 10.5281/zenodo.20395773 | June 2026
+    </div>	
+    <h2>1. Statement of Need</h2>
+    <p>
+        Vacuum Arc Remelting (VAR) is a critical metallurgical process used to produce high-purity, segregation-free alloys for safety-critical aerospace and biomedical applications. The physics governing VAR are notoriously complex, involving a tightly coupled system of electromagnetics, fluid dynamics, heat transfer, and liquid-solid phase changes.
+    </p>
+    <p>
+        Historically, simulating these interacting phenomena has required massive, monolithic commercial software packages or complex compiled frameworks. While powerful, these tools often function as "black boxes"—particularly regarding their dynamic mesh adaptation algorithms—creating a steep learning curve that hinders educational use and slows the rapid prototyping of new physical models.
+    </p>
+    <p>
+        This software provides a fully transparent, pure-Python 2D axisymmetric multiphysics solver designed specifically for VAR and similar phase-change applications. By utilizing a custom Brackbill-Saltzman dynamic mesh generator, the solver dynamically clusters grid nodes around extreme thermal and velocity gradients (such as Marangoni-driven surface vortices) without user intervention. Built entirely on standard scientific libraries (NumPy and SciPy), this simulator democratizes access to moving-mesh magnetohydrodynamics. It serves as an accessible "glass-box" educational tool for computational physics students and a lightweight research testbed for metallurgists looking to test new boundary conditions or alloy properties before deploying to supercomputing clusters.
+    </p>
+
+    <hr>
+
+    <h2>2. Mathematical Foundations</h2>
+    <p>
+        The simulator couples four primary physical fields mapped onto a dynamically adapting non-orthogonal grid. To ensure numerical stability across the fluid-solid phase boundary, the physical domain $(R, Z)$ is mapped to a uniform computational domain $(\xi, \eta)$ using covariant and contravariant metric tensors (with coefficients $\alpha$, $\beta$, $\gamma$, and the grid Jacobian $J$).
+    </p>
+
+    <h3>2.1 Fluid Dynamics (Stream Function-Vorticity)</h3>
+    <p>
+        The fluid flow is solved using a stream function ($\psi$) and vorticity ($\omega$) formulation, which intrinsically satisfies mass conservation for incompressible flows. The steady-state vorticity transport equation balances advection, diffusion, thermal buoyancy, and electromagnetic forcing:
+    </p>
+    <div class="equation">
+        $$u \frac{\partial \omega}{\partial \xi} + w \frac{\partial \omega}{\partial \eta} = \nu \nabla^2 \omega - \mathbf{g} \beta_T \frac{\partial \theta}{\partial R} + \mathbf{F}_{lorentz}$$
+    </div>
+    <p>
+        Where $u$ and $w$ are the contravariant velocity components, and $\theta$ is the non-dimensional temperature. To simulate the phase transition, a smooth mushy-zone liquid fraction multiplier is applied. This effectively damps the vorticity and stream function to strictly zero within the solid ingot, avoiding the need for discrete internal boundary tracking.
+    </p>
+    <p>
+        At the upper liquid boundary, the flow is strongly driven by Marangoni surface tension convection, applied as a Neumann boundary condition scaling with the Marangoni number ($Ma$):
+    </p>
+    <div class="equation">
+        $$\omega_{surface} = -Ma \frac{\partial \theta}{\partial R}$$
+    </div>
+
+    <h3>2.2 Heat Transfer and Phase Change</h3>
+    <p>
+        The energy equation is solved using upwind differencing for convective terms to maintain diagonal dominance in high-velocity regions. The simulation incorporates a localized Gaussian heat flux at the upper boundary to represent the electrical arc, and convective cooling at the crucible walls (governed by the Biot number, $Bi$). The resulting thermal field directly drives the buoyancy terms (via the Grashof number, $Gr$) and dictates the bounds of the liquid-solid mushy zone.
+    </p>
+
+    <h3>2.3 Electromagnetic Coupling</h3>
+    <p>
+        The VAR process relies heavily on magnetic stirring. The code solves the magnetic induction equation for the magnetic flux function ($F$), driven by fluid advection and the magnetic Reynolds number ($Rm$). The gradient of this magnetic field exerts a volumetric Lorentz force on the fluid, leading to the characteristic "pinch" effect in the liquid pool:
+    </p>
+    <div class="equation">
+        $$\mathbf{F}_{lorentz} = -S_{lor} \frac{1}{R^2} \frac{\partial (F^2)}{\partial Z}$$
+    </div>
+    <p>
+        Where $S_{lor}$ is the electromagnetic interaction parameter. This force violently opposes the Marangoni surface flow, creating complex secondary circulation eddies that the adaptive mesh is specifically designed to resolve.
+    </p>
+
+    <h3>2.4 Dynamic Mesh Adaptation (Brackbill-Saltzman)</h3>
+    <p>
+        To resolve boundary layers without globally refining the grid, the physical coordinates $(R, Z)$ are treated as solutions to a system of coupled elliptic Poisson equations. The grid generator minimizes a weighted functional of grid smoothness, orthogonality, and volume variation.
+    </p>
+    <p>
+        The adaptation source terms ($P$ and $Q$) act as a mathematical "gravity," calculated directly from the normalized gradients of the fluid vorticity and temperature fields. To ensure dimensional stability and prevent grid folding (negative Jacobians), the forcing terms are dimensionally balanced with the absolute cell area $|J|$ and globally constrained by a proportional limiter, allowing the grid to safely conform to the Marangoni vortex over successive relaxation sweeps.
+    </p>
+<hr>
+
+    <h2>3. Software Architecture and Implementation</h2>
+    <p>
+        The simulator is written entirely in Python, utilizing <code>NumPy</code> for vectorized matrix operations and <code>SciPy</code> for spatial interpolation. To maximize readability and extensibility, the codebase is structured around an object-oriented design that strictly separates the geometric grid generation from the physical PDE solvers.
+    </p>
+
+    <h3>3.1 Object-Oriented Design</h3>
+    <p>
+        The software architecture is divided into two primary classes:
+    </p>
+    <ul>
+        <li>
+            <strong><code>BrackbillSaltzmanSolver</code>:</strong> An independent grid-generation engine. It takes a purely geometric approach to mesh relaxation, accepting current coordinates and a scalar monitor function ($W$). It utilizes a Gauss-Seidel point-relaxation scheme to iteratively solve the elliptic grid equations. By isolating this solver, researchers can easily substitute different monitor functions or grid penalty weights without altering the underlying physics.
+        </li>
+        <li>
+            <strong><code>VAR_Adaptive_Simulator</code>:</strong> The core multiphysics controller. It maintains the physical state arrays (temperature, vorticity, stream function, magnetic flux) and manages the finite-difference PDE solvers. It handles the synchronization of Neumann and Dirichlet boundary conditions and dictates the epoch-based timing of when the grid should pause physics to adapt.
+        </li>
+    </ul>
+
+    <h3>3.2 Safe Mesh Relaxation and Limiting</h3>
+    <p>
+        Adaptive mesh generation in highly transient flows is notoriously prone to grid collapse (where nodes cross and the grid Jacobian drops below zero). To ensure absolute structural safety during autonomous operation, the <code>BrackbillSaltzmanSolver</code> implements two critical safeguards:
+    </p>
+    <ol>
+        <li>
+            <strong>Proportional Shift Limiter:</strong> During the Gauss-Seidel sweeps, the calculated displacement for any node is strictly clamped to a maximum of 10% of its local cell width. This prevents high-frequency numerical oscillations (checkerboarding) when the adaptation weights are high.
+        </li>
+        <li>
+            <strong>Dimensional Balancing:</strong> The adaptation source terms ($P$ and $Q$) are explicitly scaled by the absolute local cell area $|J|$. This prevents the dimensional decay trap inherent in the Brackbill-Saltzman equations, ensuring the mathematical "gravity" of the grid remains perfectly balanced with the Laplacian smoothing forces as the cells compress.
+        </li>
+    </ol>
+
+    <h3>3.3 Physics Remapping and Interpolation</h3>
+    <p>
+        Because the grid nodes physically move during an adaptation epoch, the state variables must be mapped from the old geometric space to the new geometric space. The simulator handles this using a bulletproof interpolation pipeline via <code>scipy.interpolate.griddata</code>. 
+    </p>
+    <p>
+        A primary linear interpolation projects the fields onto the newly curved coordinate arrays. To protect against boundary clipping or floating-point <code>NaN</code> artifacts at the absolute edges of the domain, the remapping function utilizes a localized nearest-neighbor fallback. This ensures that extreme boundary values (like the $1.5$ dimensionless arc temperature) are perfectly preserved across grid epochs without numerical leakage.
+    </p>
+<hr>
+
+    <h2>4. Results and Discussion</h2>
+    <p>
+        The efficacy of the Python-based adaptive simulator is demonstrated through the successful convergence of a highly driven VAR melt pool. The simulation was initialized with a baseline uniform $100 \times 100$ grid and advanced through successive epochs of coupled physics and mesh relaxation. The final steady-state output confirms the successful resolution of interacting electromagnetic and thermodynamic forces.
+    </p>
+	<figure style="text-align: center; margin: 30px 0;">
+        <img src="var_sim_FINAL_CONVERGED_RESULTS_for_omega_sor_0_2_adapt_weight_25_0.png" alt="Simulation Results: Adapted Grid, Thermal Profile, and Streamlines" style="max-width: 100%; height: auto; border: 1px solid #ccc; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+        <figcaption style="font-size: 11pt; color: #555; margin-top: 10px; font-style: italic; text-align: justify; padding: 0 20px;">
+            <strong>Figure 1:</strong> Final steady-state simulation results. <em>Left:</em> The dynamically adapted Brackbill-Saltzman mesh clustering around high gradients. <em>Center:</em> The resolved thermal field showing the distinct liquid melt pool. <em>Right:</em> Fluid streamlines detailing the Marangoni-driven primary vortex and the electromagnetically driven secondary circulation.
+        </figcaption>
+    </figure>
+    <h3>4.1 Grid Convergence and Dimensional Stability</h3>
+    <p>
+        The Brackbill-Saltzman mesh adaptation successfully identified and tracked the boundaries of the Marangoni-driven vortex and the liquid-solid phase front. During adaptation, the minimum grid Jacobian (Min J) smoothly transitioned from a uniform baseline of $1.53 \times 10^{-4}$ down to $5.38 \times 10^{-5}$. 
+    </p>
+    <p>
+        This represents a nearly 300% localized increase in grid density precisely where the fluid velocity gradients are steepest. Importantly, the grid achieved this compression without any node-crossing or geometric folding, validating the efficacy of the absolute-area dimensional balancing ($|J|$) applied to the adaptation source terms.
+    </p>
+
+    <h3>4.2 Thermal-Fluid Coupling</h3>
+    <p>
+        The resolved thermal field clearly illustrates the characteristic "bowl" shape of a continuous casting or VAR melt pool. The temperature gradients smoothly transition from the active liquid region into the solid boundary constraints enforced by the crucible walls and baseplate. 
+    </p>
+    <p>
+        The fluid streamlines reveal a massive, cleanly resolved primary circulation loop. The flow is driven radially outward along the top surface by Marangoni shear stresses, while the volumetric Lorentz forces simultaneously push the interior fluid downward. The adaptive mesh allows the solver to capture not only this primary vortex but also the subtle, secondary counter-rotating eddies forming beneath it, which dictate the ultimate depth and shape of the molten region.
+    </p>
+
+    <h3>4.3 Resolution of Extreme Numerical Gradients</h3>
+    <p>
+        In highly coupled magnetohydrodynamics, sharp boundary layers easily destabilize finite-difference PDE solvers. In this simulation, the localized fluid vorticity ($\omega$) peaked at values exceeding 46,000 due to the violent opposition between the surface tension forces and the magnetic pinch effect. 
+    </p>
+    <p>
+        On a standard uniform grid, gradients of this magnitude routinely shatter the diagonal dominance of the Gauss-Seidel solver, resulting in non-physical temperatures or complete mathematical divergence. By dynamically reallocating nodes to absorb these gradients, the adaptive mesh successfully stabilized the physics solvers, allowing the thermal, magnetic, and fluid residuals to smoothly converge to steady-state tolerances ($< 10^{-4}$).
+    </p>
+	<hr>
+    <h2>How to Cite This Software</h2>
+    <p>
+        If you use this simulator in your research or educational materials, please cite it using the following DOI:
+    </p>
+    <blockquote style="background-color: #f9f9f9; border-left: 4px solid #ccc; padding: 10px 20px; font-family: monospace;">
+        <strong>DOI:</strong> <a href="https://doi.org/10.XXXX/zenodo.XXXXXXX">10.XXXX/zenodo.XXXXXXX</a>
+    </blockquote>
+</body>
+</html>

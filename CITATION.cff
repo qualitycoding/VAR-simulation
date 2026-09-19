@@ -1,0 +1,39 @@
+cff-version: 1.2.0
+title: >-
+  A verified adaptive-mesh solver for the 2D axisymmetric
+  Vacuum Arc Remelting model
+message: Please cite this software and the accompanying technical note.
+type: software
+authors:
+  - family-names: Polton
+    given-names: Richard
+    affiliation: GHSC Research
+abstract: >-
+  Axisymmetric Vacuum Arc Remelting solver on body-fitted,
+  solution-adaptive meshes, implementing the model of Polton
+  (1998), University of Southampton, chapter 4. The discrete
+  operators are verified second-order on curvilinear meshes and
+  the thermal problem is mesh-converged; the flow integrals are
+  not yet mesh- and regularisation-independent at the
+  resolutions reached and are reported as outstanding.
+keywords:
+  - vacuum arc remelting
+  - adaptive mesh
+  - body-fitted coordinates
+  - computational fluid dynamics
+  - verification
+license: MIT
+version: 0.1.0
+date-released: 2026-09-18
+references:
+  - type: thesis
+    title: >-
+      Numerical Grid Generation And Its Application In The Solution
+      Of A Model Of The Vacuum-Arc Remelting (VAR) Process
+    authors:
+      - family-names: Polton
+        given-names: Richard
+    institution:
+      name: University of Southampton
+    thesis-type: PhD thesis
+    year: 1998

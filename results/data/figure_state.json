@@ -1,0 +1,53 @@
+{
+  "uniform": {
+    "molten_volume": 0.14245747291364153,
+    "kinetic_energy": 180.10871239327042,
+    "circulation": 0.5239938331048462,
+    "enstrophy": 82277.37275034758,
+    "thermal_energy": 3.1000871723960133,
+    "surface_temp_integral": 3.0814444485883437,
+    "heat_in_AC": 2.4883761637461657,
+    "heat_out_DC": 2.486365670593021,
+    "heat_out_OD": 0.0,
+    "imbalance": 0.000807953870655192,
+    "theta_max": 1.214681847230564,
+    "psi_max": 1.4049472380713532,
+    "omega_max": 1438.2368234773376,
+    "min_jacobian": 0.00014999999999999833
+  },
+  "adapted": {
+    "molten_volume": 0.14074805061458895,
+    "kinetic_energy": 206.04648405859245,
+    "circulation": 0.5778590865271245,
+    "enstrophy": 89938.05134677252,
+    "thermal_energy": 3.096037658727879,
+    "surface_temp_integral": 3.0825974588363105,
+    "heat_in_AC": 2.4866033596346937,
+    "heat_out_DC": 2.480072426958986,
+    "heat_out_OD": 0.0,
+    "imbalance": 0.0026264472982401735,
+    "theta_max": 1.2123475072770973,
+    "psi_max": 1.5045005195471803,
+    "omega_max": 1463.6251520797125,
+    "min_jacobian": 2.040946395951489e-05
+  },
+  "grid": {
+    "sweeps": 22,
+    "residual": 2.8595720377098174e-07,
+    "method": "direct"
+  },
+  "residual_uniform": {
+    "theta": 9.257218710523385e-14,
+    "omega": 2.805765184656996e-11,
+    "psi": 3.598580645359399e-15,
+    "G": 2.2194581783075234e-16
+  },
+  "residual_adapted": {
+    "theta": 1.5984331031350672e-14,
+    "omega": 1.8767848871603e-10,
+    "psi": 7.278220638999329e-16,
+    "G": 5.795734114504364e-16
+  },
+  "converged_uniform": true,
+  "converged_adapted": true
+}
