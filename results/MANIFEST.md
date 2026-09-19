@@ -14,7 +14,8 @@ files. All were produced by the scripts in `src/`.
 | file | produced by | contents |
 |---|---|---|
 | `figure_state.json` | `src/make_figure.py` | Diagnostics and residuals for the figure, uniform and adapted. |
-| `refine_100.json` | `src/run_refinement.py 100 51,76,101 55` | Mesh-convergence study of the thermal problem. Source of the heat-balance orders 2.26 and 3.20. |
+| `refine_current.json` | see `refine_current.log` | **Current formulation.** Thermal mesh-convergence at a two-cell band. Source of the heat-balance orders 2.13 and 2.93 in section 3 of the note. The N=76 case stalled at 1.6e-2; this is flagged in the note. |
+| `refine_100.json` | `src/run_refinement.py 100 51,76,101 55` | Thermal mesh-convergence under the **superseded** fixed-width ramp (orders 2.26 and 3.20). Retained for comparison; the note no longer cites it. |
 | `mushy_scan_76.json` | width scan at N=76 | Fixed physical-width ramp. Source of the 76% kinetic-energy spread in section 4 of the note. **Superseded formulation** — kept as the evidence for why it was replaced. |
 | `mushy_resolved.json` | resolved-width check | Mesh convergence at fixed resolved widths (0.06, 0.09). **Superseded formulation.** |
 | `heaviside.json` | cell-width band study | Current formulation. Source of the band-independence table (75.93% -> 43.04% -> 32.80%). |
@@ -28,11 +29,16 @@ files. All were produced by the scripts in `src/`.
 
 ## Provenance caveat
 
-`mushy_scan_76.json`, `mushy_resolved.json` and the flow entries in
-`var_result.json` predate the move to a cell-width mushy band. They are
+`mushy_scan_76.json`, `mushy_resolved.json`, `refine_100.json` and the
+flow entries in `var_result.json` predate the move to a cell-width mushy
+band. They are
 retained because the note cites them as evidence about the superseded
-approach, not as results about the physics. `heaviside.json` and
-`figure_state.npz` use the current formulation.
+approach, not as results about the physics. `heaviside.json`, `refine_current.json` and `figure_state.npz` use the
+current formulation.
+
+The thermal conclusions are unchanged between the two formulations, which
+is expected: thermal quantities vary by only 0.16-0.37% across the width
+scan, because the energy equation does not see the D'Arcy term directly.
 
 ## Not included
 
