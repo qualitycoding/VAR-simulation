@@ -151,18 +151,20 @@ figcaption{font-size:12px;line-height:1.65;color:var(--ink-soft);padding:11px 2p
 
 <h3>Mesh convergence of the thermal problem</h3>
 
-<p>All three resolutions converged to residuals between 7&times;10<sup>-14</sup> and 1&times;10<sup>-12</sup>. The heat balance is the strongest of these tests because its exact value is zero, so no extrapolated reference is needed.</p>
+<p>Computed with the cell-width mushy band of section 4, at a two-cell band. The heat balance is the strongest of these tests because its exact value is zero, so no extrapolated reference is needed.</p>
 
 <div class="scroll"><table>
-<thead><tr><th class="num">N</th><th class="num">heat imbalance</th><th class="num">order</th><th class="num">molten volume</th><th class="num">thermal energy</th></tr></thead>
+<thead><tr><th class="num">N</th><th class="num">residual</th><th class="num">heat imbalance</th><th class="num">order</th><th class="num">molten volume</th><th class="num">thermal energy</th></tr></thead>
 <tbody>
-<tr><td class="num">51</td><td class="num">5.617&times;10<sup>-3</sup></td><td class="num">&mdash;</td><td class="num">0.13985847</td><td class="num">3.096918</td></tr>
-<tr><td class="num">76</td><td class="num">2.244&times;10<sup>-3</sup></td><td class="num">2.26</td><td class="num">0.14109374</td><td class="num">3.098289</td></tr>
-<tr><td class="num">101</td><td class="num">8.937&times;10<sup>-4</sup></td><td class="num">3.20</td><td class="num">0.14122454</td><td class="num">3.098547</td></tr>
+<tr><td class="num">51</td><td class="num">4.3&times;10<sup>-14</sup></td><td class="num">4.4522&times;10<sup>-3</sup></td><td class="num">&mdash;</td><td class="num">0.14500714</td><td class="num">3.103464</td></tr>
+<tr class="hl"><td class="num">76</td><td class="num">1.6&times;10<sup>-2</sup></td><td class="num">1.8792&times;10<sup>-3</sup></td><td class="num">2.13</td><td class="num">0.14340874</td><td class="num">3.101396</td></tr>
+<tr><td class="num">101</td><td class="num">2.8&times;10<sup>-11</sup></td><td class="num">8.0795&times;10<sup>-4</sup></td><td class="num">2.93</td><td class="num">0.14245747</td><td class="num">3.100087</td></tr>
 </tbody>
 </table></div>
 
-<p>Richardson extrapolation places the N = 101 molten volume within 0.011% and the thermal energy within 0.0014% of the extrapolated value. The surface temperature integral converges at order 1.90 and the net arc heat input at 2.33.</p>
+<p>The heat imbalance falls at observed order 2.13 then 2.93, consistent with the second-order accuracy established for the operators. The surface temperature integral converges at order 1.79 with the finest mesh within 0.029% of its extrapolated value; thermal energy is within 0.073% and molten volume within 0.99%.</p>
+
+<p>The highlighted row carries a caveat. The N = 76 case did not reach the convergence tolerance within its allotted time, stalling at a relative residual of 1.6&times;10<sup>-2</sup>; the N = 51 and N = 101 cases reached 10<sup>-14</sup> and 10<sup>-11</sup>. The imbalance at N = 76 sits where a converged value would be expected and the orders either side of it are consistent, but a three-point order estimate resting on one unconverged point is weaker evidence than it appears, and it is reported here rather than quietly dropped. Independent runs at one-cell and three-cell bands give imbalance orders of 2.28 then 2.95, and 1.50 then 2.66, supporting the same conclusion.</p>
 
 <p>A note on what is <i>not</i> in that table. Point extrema such as the maximum stream function, and the pool depth located by interpolating the melting isotherm, were used as convergence metrics in an earlier version of this work and produced fitted orders of 0.16 and &minus;6 &mdash; that is, nonsense. Neither is better than first order and both are sensitive to where nodes happen to fall. They are reported elsewhere in this note for description but are not used to assess convergence.</p>
 
@@ -240,6 +242,8 @@ figcaption{font-size:12px;line-height:1.65;color:var(--ink-soft);padding:11px 2p
 <p><b>The D'Arcy term does not arrest the solid.</b> Velocity in the solid region is suppressed by about a factor of 12 relative to the liquid, not the three orders of magnitude specified by Hibbert, Markatos and Voller. This appears structural rather than a matter of tuning: the term acts on the vorticity equation, so it drives the solid irrotational, after which the stream function satisfies a homogeneous Poisson equation there and decays away from the pool without vanishing. The thesis anticipates the qualitative point in section 4.1, observing that non-zero velocity in the solid is unrealistic but acceptable given the advantage of a single equation across both regions. The quantitative size of the gap between the streamfunction-vorticity and primitive-variable formulations is reported here but has not been analysed, and the structural explanation above, while consistent with the evidence, has not been proved.</p>
 
 <p><b>Continuation stops at Gr = 2.0&times;10<sup>8</sup>.</b> Beyond that the Picard iteration with lagged convection loses stability and no steady solution was obtained. Whether this is loss of a stable steady laminar branch or a limitation of the iteration has not been determined. A Newton method on the fully coupled system, or time-accurate integration, would settle it. No claim is made either way, and in particular the full unscaled Table 4.1 parameters (Gr = 2.9&times;10<sup>10</sup>) remain out of reach here.</p>
+
+<p><b>One point in the thermal convergence table is not fully converged.</b> The N = 76 case stalled at a relative residual of 1.6&times;10<sup>-2</sup>, as noted in section 3. The conclusion is corroborated by runs at other band widths, but the table would be stronger with that point rerun to tolerance.</p>
 
 <p><b>Mesh-convergence evidence is at the verification case only.</b> The refinement study was run at the section 4.5.1 parameters, where every case converges to machine precision quickly. At Gr = 2.0&times;10<sup>8</sup> convergence on coarse uniform meshes is slow enough that a comparable study was not possible within the compute available, so the demanding case is reported at the residual achieved rather than with a demonstrated order.</p>
 
