@@ -1,0 +1,8 @@
+Anderson acceleration on the N=76 Picard map (residual = max of theta, omega, psi)
+
+AA m=10  sigma=0.5*scale   final=5.19e-02 (64s)
+   trace 20:1e+00  60:5e-02  100:7e-01  140:9e-01  180:1e+00  220:2e-01  260:9e-01  300:9e-01  340:1e+00  380:7e-02  420:9e-01  460:4e-02  500:5e-02
+AA m=10  sigma=2.0*scale   final=9.80e-01 (64s)
+   trace 20:1e+00  60:1e+00  100:1e-01  140:4e-02  180:9e-01  220:9e-01  260:8e-01  300:9e-01  340:1e+00  380:9e-01  420:1e+00  460:9e-01  500:1e+00
+AA m=20  sigma=2.0*scale   final=5.39e-02 (65s)
+   trace 20:1e+00  60:2e-01  100:1e+00  140:1e+00  180:5e-01  220:1e+00  260:1e+00  300:1e+00  340:9e-01  380:8e-02  420:8e-02  460:6e-02  500:5e-02

@@ -1,0 +1,6 @@
+N=76, cells=2, verification case; residual = max(theta, omega, psi)
+
+baseline  rt=.5 rf=1.0 sig=.5      res@100=1.2e-02 @200=6.0e-02 @300=3.1e-02 @380=6.0e-02  last-160 range [8.9e-03,1.3e-01]  (43s)
+A  under-relax flow rf=0.5         res@100=1.0e-01 @200=1.4e-01 @300=6.1e-02 @380=1.7e-01  last-160 range [4.7e-02,8.4e-01]  (44s)
+B  heavier PTC sig=2.0             res@100=6.3e-03 @200=1.0e-03 @300=3.5e-01 @380=3.3e-01  last-160 range [5.0e-02,3.5e-01]  (44s)
+C  rt=0.2 rf=0.5                   res@100=2.0e-01 @200=1.8e-01 @300=3.1e-01 @380=5.4e-01  last-160 range [1.7e-02,5.4e-01]  (44s)

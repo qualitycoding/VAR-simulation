@@ -14,7 +14,9 @@ files. All were produced by the scripts in `src/`.
 | file | produced by | contents |
 |---|---|---|
 | `figure_state.json` | `src/make_figure.py` | Diagnostics and residuals for the figure, uniform and adapted. |
-| `refine_current.json` | see `refine_current.log` | **Current formulation.** Thermal mesh-convergence at a two-cell band. Source of the heat-balance orders 2.13 and 2.93 in section 3 of the note. The N=76 case stalled at 1.6e-2; this is flagged in the note. |
+| `refine_converged.json` | see `logs/refine_converged.txt` | **Current formulation, all meshes converged to <=1e-11.** N=51,71,81,101 at a two-cell band. Source of the heat-balance orders 2.06/2.48/3.06 in section 3 of the note. Replaces `refine_current.json`. |
+| `n76_limit_cycle.json` | see `logs/n76_*.txt` | Evidence that the Picard iteration limit-cycles at N=76: cycle statistics, damping variants, Anderson acceleration, neighbouring meshes. |
+| `refine_current.json` | see `logs/refine_current.txt` | **Superseded.** Same study with N=76 in place of 71 and 81. The N=76 case did not converge (limit cycle). The orders 2.13/2.93 and the Richardson errors 0.99%/0.073%/0.029% derived from it are withdrawn. Retained as the record of what was first reported. |
 | `refine_100.json` | `src/run_refinement.py 100 51,76,101 55` | Thermal mesh-convergence under the **superseded** fixed-width ramp (orders 2.26 and 3.20). Retained for comparison; the note no longer cites it. |
 | `mushy_scan_76.json` | width scan at N=76 | Fixed physical-width ramp. Source of the 76% kinetic-energy spread in section 4 of the note. **Superseded formulation** — kept as the evidence for why it was replaced. |
 | `mushy_resolved.json` | resolved-width check | Mesh convergence at fixed resolved widths (0.06, 0.09). **Superseded formulation.** |
@@ -33,8 +35,10 @@ files. All were produced by the scripts in `src/`.
 flow entries in `var_result.json` predate the move to a cell-width mushy
 band. They are
 retained because the note cites them as evidence about the superseded
-approach, not as results about the physics. `heaviside.json`, `refine_current.json` and `figure_state.npz` use the
-current formulation.
+approach, not as results about the physics. `heaviside.json`, `refine_converged.json` and `figure_state.npz` use the
+current formulation. In `heaviside.json`, all N=51 and N=76 cases converged
+to 1e-10 or better; the N=101 cases stalled near 1e-6, and the two-cell
+N=76 case is the limit cycle.
 
 The thermal conclusions are unchanged between the two formulations, which
 is expected: thermal quantities vary by only 0.16-0.37% across the width

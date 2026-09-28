@@ -1,0 +1,129 @@
+{
+  "case": {
+    "N": 76,
+    "mushy_cells": 2.0,
+    "viscosity_factor": 100,
+    "relax_theta": 0.5,
+    "relax_flow": 1.0,
+    "pseudo_transient_sigma": "0.5 * operator scale"
+  },
+  "finding": "Picard iteration converges to a periodic orbit, not a fixed point. Residuals repeat exactly with period 450 sweeps (omega residual 1.3e-1 at sweeps 150, 600, 1050, 1500).",
+  "cycle_statistics_sweeps_153_to_618": {
+    "imbalance": {
+      "min": 0.0018558034745958685,
+      "max": 0.0019163492372741575,
+      "spread_pct": 3.218361374836296
+    },
+    "molten_volume": {
+      "min": 0.1433592279350957,
+      "max": 0.14348353822830576,
+      "spread_pct": 0.0866708255146587
+    },
+    "thermal_energy": {
+      "min": 3.1013249214126075,
+      "max": 3.1015113057311994,
+      "spread_pct": 0.006009631905840614
+    },
+    "surface_temp_integral": {
+      "min": 3.0804676180937456,
+      "max": 3.0805045624426706,
+      "spread_pct": 0.0011993013154558325
+    },
+    "heat_in_AC": {
+      "min": 2.490722605689059,
+      "max": 2.4908332673873868,
+      "spread_pct": 0.00444288282835405
+    },
+    "kinetic_energy": {
+      "min": 159.8593672768778,
+      "max": 161.62957387787867,
+      "spread_pct": 1.1016799937957902
+    },
+    "circulation": {
+      "min": 0.48136043913826687,
+      "max": 0.48569859482987365,
+      "spread_pct": 0.8978972569347158
+    },
+    "psi_max": {
+      "min": 1.320819138814196,
+      "max": 1.3283706192390459,
+      "spread_pct": 0.5701410087782623
+    }
+  },
+  "damping_variants_380_sweeps_cold_start": {
+    "baseline rt=0.5 rf=1.0 sigma=0.5": {
+      "res_at_100": 0.012,
+      "res_at_380": 0.06,
+      "last160_range": [
+        0.0089,
+        0.13
+      ]
+    },
+    "A rf=0.5": {
+      "res_at_100": 0.1,
+      "res_at_380": 0.17,
+      "last160_range": [
+        0.047,
+        0.84
+      ]
+    },
+    "B sigma=2.0 (reached 1.0e-3 at sweep 200, then departed)": {
+      "res_at_100": 0.0063,
+      "res_at_380": 0.33,
+      "last160_range": [
+        0.05,
+        0.35
+      ]
+    },
+    "C rt=0.2 rf=0.5": {
+      "res_at_100": 0.2,
+      "res_at_380": 0.54,
+      "last160_range": [
+        0.017,
+        0.54
+      ]
+    }
+  },
+  "anderson_acceleration_500_iterations": {
+    "m=10 sigma=0.5": {
+      "final": 0.0519,
+      "behaviour": "erratic, residual swings to ~1"
+    },
+    "m=10 sigma=2.0": {
+      "final": 0.98,
+      "behaviour": "erratic"
+    },
+    "m=20 sigma=2.0": {
+      "final": 0.0539,
+      "behaviour": "erratic"
+    }
+  },
+  "neighbouring_meshes_two_cell_band": {
+    "71": {
+      "converged": true,
+      "residual": 7.5e-12
+    },
+    "81": {
+      "converged": true,
+      "residual": 1.1e-13
+    },
+    "91": {
+      "converged": false,
+      "residual": 0.005,
+      "note": "70 s budget; cycle vs slow convergence not determined"
+    }
+  },
+  "orders_if_N76_taken_within_cycle": {
+    "cycle_minimum": {
+      "imbalance": 0.0018558,
+      "order_51_76": 2.158,
+      "order_76_101": 2.891
+    },
+    "cycle_maximum": {
+      "imbalance": 0.0019163,
+      "order_51_76": 2.079,
+      "order_76_101": 3.002
+    }
+  },
+  "untested_hypothesis": "A fixed point exists but is unstable under Picard iteration (variant B approached 1e-3)."
+}

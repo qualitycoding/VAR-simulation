@@ -1,0 +1,10 @@
+N=  51 conv=True res=4.28e-14 imbalance=+4.4522e-03 molten=0.14500714 thermal=3.103464 surfT=3.078549 (3s)
+N=  76 conv=False res=1.63e-02 imbalance=+1.8792e-03 molten=0.14340874 thermal=3.101396 surfT=3.080500 (80s)
+N= 101 conv=True res=2.81e-11 imbalance=+8.0795e-04 molten=0.14245747 thermal=3.100087 surfT=3.081444 (43s)
+
+orders:
+  imbalance N=51->76  p=2.13
+  imbalance N=76->101  p=2.93
+  molten_volume          p= 1.28 extrap=0.14105916 finest_err=0.9913%
+  thermal_energy         p= 1.13 extrap=3.0978318 finest_err=0.0728%
+  surface_temp_integral  p= 1.79 extrap=3.0823312 finest_err=0.0288%

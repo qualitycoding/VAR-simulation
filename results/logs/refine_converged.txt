@@ -1,0 +1,15 @@
+   N  residual    imbalance  molten volume  thermal energy  surf. T integral
+  51   4.3e-14   4.4522e-03     0.14500714        3.103464          3.078549
+  71   7.5e-12   2.2253e-03     0.14365826        3.101905          3.080168
+  81   1.1e-13   1.5986e-03     0.14326413        3.101294          3.080674
+ 101   2.8e-11   8.0795e-04     0.14245747        3.100087          3.081444
+
+pairwise observed order  p = ln(e_a/e_b)/ln(h_a/h_b),  h = 1/(N-1)   [imbalance: exact answer is 0]
+  N= 51-> 71  imbalance p =  2.06
+  N= 71-> 81  imbalance p =  2.48
+  N= 81->101  imbalance p =  3.06
+
+Richardson on the three finest converged meshes N=71,81,101 (unequal ratio, solved for p):
+  molten_volume          no consistent order: [0.1436582605224177, 0.14326413310987487, 0.14245747291364153]
+  thermal_energy         no consistent order: [3.101905427535553, 3.1012942850743066, 3.1000871723960133]
+  surface_temp_integral  p= 0.52  extrapolated=3.0876603  finest-mesh error=0.2013%

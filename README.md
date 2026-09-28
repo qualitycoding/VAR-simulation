@@ -19,9 +19,9 @@ numbers in the source refer to that thesis. Parameters are its Table 4.1.
 
 - The discrete operators are consistent and second-order on curvilinear
   meshes, confirmed by manufactured solution (`tests/test_operators.py`).
-- The energy equation converges to machine precision, and its global heat
-  balance — whose exact value is zero — falls at observed order 2.26 then
-  3.20 across N = 51, 76, 101.
+- The energy equation converges to machine precision on N = 51, 71, 81
+  and 101, and its global heat balance — whose exact value is zero —
+  falls at observed pairwise orders 2.06, 2.48 and 3.06.
 - The magnetic induction equation is solved exactly with the thesis arc
   condition (4.32) applied.
 - Steady solutions exist and converge along a continuation path from
@@ -35,10 +35,24 @@ numbers in the source refer to that thesis. Parameters are its Table 4.1.
   It falls at roughly first order, so a few per cent needs N of order
   300–600. `src/run_highres.py` exists to do exactly that.
 - Do not quote kinetic energy, circulation or psi_max from this package
-  as converged values. Molten volume (2.6% band spread at N = 101) and
-  all thermal quantities are in much better shape.
+  as converged values.
+- **Thermal integrals other than the heat balance have no demonstrated
+  asymptotic order.** Molten volume and thermal energy vary by 1.8% and
+  0.11% across N = 51 to 101, but their successive changes do not decay,
+  so no error estimate is claimed. Extrapolated errors quoted in earlier
+  versions of the note were derived using an unconverged point and are
+  withdrawn.
 
 **Known limitations**
+
+- **The Picard iteration limit-cycles at N = 76** (two-cell band,
+  verification case): the residuals repeat exactly with period 450
+  sweeps, so this is not slow convergence. N = 71 and N = 81 converge;
+  N = 91 did not converge in its budget and is uninvestigated. Damping,
+  heavier pseudo-transient terms and Anderson acceleration did not remove
+  the cycle (`results/data/n76_limit_cycle.json`). Cause undiagnosed; a
+  fixed point that exists but is unstable under Picard is one untested
+  hypothesis.
 
 - The D'Arcy term suppresses velocity in the solid by about 12x, not the
   three orders of magnitude Hibbert, Markatos and Voller specify. This
