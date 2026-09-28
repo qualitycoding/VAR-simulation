@@ -7,6 +7,7 @@ type: software
 authors:
   - family-names: Polton
     given-names: Richard
+    email: var@ghscresearch.org
     affiliation: GHSC Research
 abstract: >-
   Axisymmetric Vacuum Arc Remelting solver on body-fitted,
@@ -23,8 +24,12 @@ keywords:
   - computational fluid dynamics
   - verification
 license: MIT
+repository-code: 'https://github.com/qualitycoding/VAR-simulation'
 version: 0.1.0
-date-released: 2026-09-18
+date-released: 2026-09-28
+# doi: 10.5281/zenodo.XXXXXXX
+# ^ assigned by Zenodo when the release is archived. Do not reuse
+#   10.5281/zenodo.20395773, which belongs to the superseded draft.
 references:
   - type: thesis
     title: >-
@@ -35,5 +40,6 @@ references:
         given-names: Richard
     institution:
       name: University of Southampton
+    department: Faculty of Mathematical Studies
     thesis-type: PhD thesis
     year: 1998

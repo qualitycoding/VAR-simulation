@@ -148,9 +148,11 @@ circulation that does not occur — and should not be circulated.
 
 ## Licence and citation
 
-MIT, see `LICENSE`. `CITATION.cff` carries the software metadata; adjust
-the author block, version and DOI before release. Cite the 1998 thesis
-for the model and this repository for the implementation.
+MIT, see `LICENSE`. `CITATION.cff` carries the software metadata: author,
+contact address, repository, and the 1998 thesis as the reference for the
+model. It has no DOI yet; add one when Zenodo assigns it on release.
+Cite the 1998 thesis for the model and this repository for the
+implementation.
 
 The DOI `10.5281/zenodo.20395773` in the header of the superseded draft
 refers to that draft, not to this work. Decide whether this release
