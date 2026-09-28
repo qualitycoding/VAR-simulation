@@ -1,0 +1,11 @@
+Fit v(h) = v0 + c h^p, all 7 converged meshes. p free (grid search), then p fixed at 1.
+
+  molten_volume          best p = 0.30 (range with <=2x the misfit: 0.30-1.26)
+                         p=1 fit: R^2 = 0.9776, max misfit 0.1366%, v0 = 0.1400507, N=101 error vs v0 = 1.617%
+
+  thermal_energy         best p = 0.30 (range with <=2x the misfit: 0.30-1.27)
+                         p=1 fit: R^2 = 0.9784, max misfit 0.0090%, v0 = 3.096576, N=101 error vs v0 = 0.111%
+
+  surface_temp_integral  best p = 1.07 (range with <=2x the misfit: 0.86-1.29)
+                         p=1 fit: R^2 = 0.9994, max misfit 0.0013%, v0 = 3.084383, N=101 error vs v0 = 0.095%
+

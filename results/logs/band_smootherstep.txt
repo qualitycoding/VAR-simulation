@@ -1,0 +1,11 @@
+cells=1 N= 51 conv=True  res=5.3e-14 molten=0.1408576 KE=185.643 circ=0.558411 (4s)
+cells=1 N= 76 conv=True  res=1.7e-10 molten=0.1407656 KE=198.249 circ=0.572373 (17s)
+cells=1 N=101 conv=True  res=3.0e-11 molten=0.1406466 KE=211.058 circ=0.596260 (52s)
+cells=3 N= 51 conv=True  res=1.3e-13 molten=0.1482831 KE=84.928 circ=0.298045 (4s)
+cells=3 N= 76 conv=True  res=1.3e-10 molten=0.1454317 KE=128.425 circ=0.403059 (15s)
+cells=3 N=101 conv=True  res=6.2e-12 molten=0.1440753 KE=152.062 circ=0.457390 (52s)
+
+spread between 1-cell and 3-cell band  (smootherstep | linear ramp, from heaviside.json)
+  N= 51  molten     5.14% |   5.55%  kinetic   75.58% |  75.93%  circulation  61.24% |  61.50%   all converged: True
+  N= 76  molten     3.26% |   3.27%  kinetic   42.77% |  43.04%  circulation  34.67% |  34.85%   all converged: True
+  N=101  molten     2.41% |   2.56%  kinetic   32.53% |  32.80%  circulation  26.37% |  26.55%   all converged: True

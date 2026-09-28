@@ -1,0 +1,165 @@
+{
+  "smootherstep_N76_leading_eigenvalues_of_picard_map": [
+    [
+      0.9072130818235096,
+      -0.017098555035036895
+    ],
+    [
+      0.9072130818235096,
+      0.017098555035036895
+    ],
+    [
+      0.8913052997143631,
+      0.021321061701376952
+    ],
+    [
+      0.8913052997143631,
+      -0.021321061701376952
+    ],
+    [
+      0.8768188915914625,
+      -0.004945175306445806
+    ],
+    [
+      0.8768188915914625,
+      0.004945175306445806
+    ]
+  ],
+  "spectral_radius": 0.90737,
+  "leading_pair_period_sweeps": 333,
+  "linear_ramp_newton_krylov": {
+    "adaptive_forcing": {
+      "converged": false,
+      "hist": [
+        {
+          "newton": 1,
+          "normF": 0.31926684035943254,
+          "residual": 0.9849324115367731,
+          "step": 1.0,
+          "gmres_info": 0,
+          "G_evals": 5,
+          "seconds": 0.5617218017578125
+        },
+        {
+          "newton": 2,
+          "normF": 0.06814949103440299,
+          "residual": 0.41706111316246114,
+          "step": 1.0,
+          "gmres_info": 0,
+          "G_evals": 9,
+          "seconds": 1.0174405574798584
+        },
+        {
+          "newton": 3,
+          "normF": 0.05113842978522274,
+          "residual": 0.185106817939625,
+          "step": 0.25,
+          "gmres_info": 0,
+          "G_evals": 17,
+          "seconds": 1.913212537765503
+        },
+        {
+          "newton": 4,
+          "normF": 0.03963008134143947,
+          "residual": 0.06330560860983567,
+          "step": 0.25,
+          "gmres_info": 0,
+          "G_evals": 25,
+          "seconds": 2.81144118309021
+        },
+        {
+          "newton": 5,
+          "normF": 0.039137543856927304,
+          "residual": 0.1427943487496908,
+          "step": 0.03125,
+          "gmres_info": 0,
+          "G_evals": 37,
+          "seconds": 4.151568174362183
+        },
+        {
+          "newton": 6,
+          "normF": 0.03899655508698271,
+          "residual": 0.19257599310710063,
+          "step": 0.0078125,
+          "gmres_info": 0,
+          "G_evals": 51,
+          "seconds": 5.828934192657471
+        }
+      ]
+    },
+    "eta_fixed_1e-3": {
+      "converged": false,
+      "hist": [
+        {
+          "newton": 1,
+          "normF": 0.35436947976790584,
+          "residual": 0.9927424341996991,
+          "step": 1.0,
+          "gmres_info": 0,
+          "G_evals": 15,
+          "seconds": 1.7177398204803467
+        },
+        {
+          "newton": 2,
+          "normF": 0.1518977680020974,
+          "residual": 0.9789711891733193,
+          "step": 1.0,
+          "gmres_info": 0,
+          "G_evals": 25,
+          "seconds": 2.871195077896118
+        },
+        {
+          "newton": 3,
+          "normF": 0.11390731588109693,
+          "residual": 0.974602252487834,
+          "step": 0.25,
+          "gmres_info": 0,
+          "G_evals": 37,
+          "seconds": 4.2473225593566895
+        },
+        {
+          "newton": 4,
+          "normF": 0.08542169099525146,
+          "residual": 0.9685333232934623,
+          "step": 0.25,
+          "gmres_info": 0,
+          "G_evals": 53,
+          "seconds": 6.122942924499512
+        }
+      ]
+    }
+  },
+  "conclusion": "Smooth profile fixed point is stable (rho=0.907). Newton on the linear ramp did not converge, so whether a linear-ramp fixed point exists at N=76 is undetermined.",
+  "first_order_fits": {
+    "molten_volume": {
+      "p_best": 0.3,
+      "p_range_2x": [
+        0.3,
+        1.26
+      ],
+      "first_order_R2": 0.9775621024213283,
+      "first_order_v0": 0.14005072129981844,
+      "N101_error_pct": 1.6169552230590287
+    },
+    "thermal_energy": {
+      "p_best": 0.3,
+      "p_range_2x": [
+        0.3,
+        1.27
+      ],
+      "first_order_R2": 0.9783771772030802,
+      "first_order_v0": 3.0965756319481827,
+      "N101_error_pct": 0.111153724256776
+    },
+    "surface_temp_integral": {
+      "p_best": 1.07,
+      "p_range_2x": [
+        0.8600000000000001,
+        1.29
+      ],
+      "first_order_R2": 0.9994026411042712,
+      "first_order_v0": 3.084382564347232,
+      "N101_error_pct": 0.0946684611705689
+    }
+  }
+}

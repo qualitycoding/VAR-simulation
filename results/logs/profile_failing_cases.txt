@@ -1,0 +1,6 @@
+smootherstep profile on every case that failed with the linear ramp
+
+N= 91 cells=2 converged=True  sweeps= 200 residual=2.3e-13 (40s)   [linear ramp: 5.0e-03 (N=91 unconverged)]
+N=101 cells=2 converged=True  sweeps= 200 residual=1.2e-11 (52s)   [linear ramp: 2.8e-11 converged]
+N=101 cells=1 converged=True  sweeps= 200 residual=3.0e-11 (51s)   [linear ramp: 1.2e-06 stalled]
+N=101 cells=3 converged=True  sweeps= 200 residual=6.2e-12 (52s)   [linear ramp: 9.1e-07 stalled]

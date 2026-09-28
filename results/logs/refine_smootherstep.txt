@@ -1,0 +1,7 @@
+N= 51 conv=True  res=4.1e-14 imbalance=4.4520e-03 molten=0.14456984 thermal=3.103458 (4s)   vs linear: molten -0.302%  imbalance -0.00%  KE +0.06%
+N= 61 conv=True  res=8.8e-11 imbalance=2.9752e-03 molten=0.14412460 thermal=3.102761 (6s)
+N= 71 conv=True  res=6.9e-11 imbalance=2.1897e-03 molten=0.14341400 thermal=3.101692 (14s)   vs linear: molten -0.170%  imbalance -1.60%  KE +2.42%
+N= 76 conv=True  res=1.8e-10 imbalance=1.9693e-03 molten=0.14307816 thermal=3.101172 (17s)
+N= 81 conv=True  res=1.5e-12 imbalance=1.6018e-03 molten=0.14308598 thermal=3.101198 (28s)   vs linear: molten -0.124%  imbalance +0.21%  KE +0.65%
+N= 91 conv=True  res=2.3e-13 imbalance=1.1995e-03 molten=0.14257259 thermal=3.100422 (40s)
+N=101 conv=True  res=1.2e-11 imbalance=8.1873e-04 molten=0.14231528 thermal=3.100018 (52s)   vs linear: molten -0.100%  imbalance +1.33%  KE +0.44%

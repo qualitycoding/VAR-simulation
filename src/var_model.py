@@ -101,6 +101,8 @@ class Parameters:
         # function of the nodal temperatures, so the Picard map stays
         # continuous and the iteration does not limit-cycle.
         self.mushy_cells = 2.0
+        # 'linear' (clipped ramp, kinked at both ends) or 'smootherstep' (C2).
+        self.mushy_profile = "smootherstep"
 
     def summary(self):
         return (f"Pr={self.Pr}  Gr={self.Gr:.3e}  Ma={self.Ma:.3e}  "
@@ -201,7 +203,14 @@ class VARModel:
         t_eta = np.gradient(self.theta, axis=1)
         band = self.p.mushy_cells * np.sqrt(t_xi ** 2 + t_eta ** 2)
         band = np.maximum(band, 1e-12)
-        return np.clip((self.theta - 1.0) / band + 0.5, 0.0, 1.0)
+        s = np.clip((self.theta - 1.0) / band + 0.5, 0.0, 1.0)
+        if getattr(self.p, "mushy_profile", "linear") == "smootherstep":
+            # C2 profile with the same support and end values as the linear
+            # ramp, zero first and second derivative at both ends.  The linear
+            # ramp has kinks at s = 0 and 1, which make the Picard map only
+            # piecewise smooth.
+            return s * s * s * (s * (6.0 * s - 15.0) + 10.0)
+        return s
 
     # ------------------------------------------------------------------
     def _boundary_normal_rows(self, side, kind):

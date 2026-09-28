@@ -1,0 +1,12 @@
+(a) Is the finite-difference Jacobian of the Picard map consistent?
+    ratio ||G'(y)v|| at step h vs step h/10, for 3 random directions (1.0 = smooth)
+
+    linear        rel. change 1e-6->1e-7: ['8.2e-05', '1.6e-04', '1.5e-04']   1e-7->1e-8: ['9.0e-04', '1.5e-03', '8.8e-04']
+    smootherstep  rel. change 1e-6->1e-7: ['1.4e-04', '1.6e-04', '8.7e-05']   1e-7->1e-8: ['1.4e-03', '1.2e-03', '1.0e-03']
+
+(b) Plain Picard at N=76 with the smootherstep profile (same settings that cycle with 'linear')
+
+       50 res=5.77e-03 (th 8.3e-07 w 5.8e-03)  sigma=1.63e+04 (5s)
+      100 res=1.60e-05 (th 6.2e-09 w 1.6e-05)  sigma=1.63e+04 (11s)
+      150 res=1.84e-10 (th 2.8e-13 w 1.8e-10)  sigma=8.13e+03 (17s)
+    CONVERGED

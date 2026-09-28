@@ -19,9 +19,14 @@ numbers in the source refer to that thesis. Parameters are its Table 4.1.
 
 - The discrete operators are consistent and second-order on curvilinear
   meshes, confirmed by manufactured solution (`tests/test_operators.py`).
-- The energy equation converges to machine precision on N = 51, 71, 81
-  and 101, and its global heat balance — whose exact value is zero —
-  falls at observed pairwise orders 2.06, 2.48 and 3.06.
+- The energy equation converges to machine precision on all seven meshes
+  tried (N = 51 to 101), and its global heat balance — whose exact value
+  is zero — converges at order 2.36 ± 0.12 (least-squares over the seven
+  meshes; 2.98 over the four finest).
+- Front-dependent integrals converge at about first order: the surface
+  temperature integral at p = 1.07, with N = 101 within 0.1% of the
+  limit. Molten volume and thermal energy are consistent with first
+  order, but their order is not pinned down.
 - The magnetic induction equation is solved exactly with the thesis arc
   condition (4.32) applied.
 - Steady solutions exist and converge along a continuation path from
@@ -36,23 +41,21 @@ numbers in the source refer to that thesis. Parameters are its Table 4.1.
   300–600. `src/run_highres.py` exists to do exactly that.
 - Do not quote kinetic energy, circulation or psi_max from this package
   as converged values.
-- **Thermal integrals other than the heat balance have no demonstrated
-  asymptotic order.** Molten volume and thermal energy vary by 1.8% and
-  0.11% across N = 51 to 101, but their successive changes do not decay,
-  so no error estimate is claimed. Extrapolated errors quoted in earlier
-  versions of the note were derived using an unconverged point and are
-  withdrawn.
+- **Only the heat balance converges at the order of the operators.** The
+  mushy band is a fixed number of cells wide, so front-dependent
+  quantities are expected to be limited to first order. Consistent with
+  the data; not separately tested.
 
 **Known limitations**
 
-- **The Picard iteration limit-cycles at N = 76** (two-cell band,
-  verification case): the residuals repeat exactly with period 450
-  sweeps, so this is not slow convergence. N = 71 and N = 81 converge;
-  N = 91 did not converge in its budget and is uninvestigated. Damping,
-  heavier pseudo-transient terms and Anderson acceleration did not remove
-  the cycle (`results/data/n76_limit_cycle.json`). Cause undiagnosed; a
-  fixed point that exists but is unstable under Picard is one untested
-  hypothesis.
+- **Convergence needs a smooth liquid-fraction profile.** With the
+  earlier clipped-linear ramp the iteration limit-cycled at N = 76 (period
+  450 sweeps), failed at N = 91 and stalled near 1e-6 at N = 101. The C2
+  `smootherstep` profile, now the default (`Parameters.mushy_profile`),
+  removes every failure found. The margin is small: the Picard map's
+  spectral radius at the N = 76 fixed point is 0.907. Why the linear ramp
+  fails is only partly established; Newton-Krylov on it did not converge
+  (`results/data/mechanism.json`).
 
 - The D'Arcy term suppresses velocity in the solid by about 12x, not the
   three orders of magnitude Hibbert, Markatos and Voller specify. This

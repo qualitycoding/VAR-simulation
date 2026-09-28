@@ -1,0 +1,5 @@
+start point: on the limit cycle after 200 Picard sweeps, residual 6.01e-02 (23s)
+  newton  1: ||F||=5.62e-02  residual=9.36e-01  step=0.5  gmres_info=0  G-evals=6  (1s)
+  newton  2: ||F||=5.54e-02  residual=9.38e-01  step=0.0156  gmres_info=0  G-evals=17  (2s)
+  newton  3: line search failed at ||F||=5.54e-02
+NOT CONVERGED

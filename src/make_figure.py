@@ -13,7 +13,7 @@ N = 101
 p = Parameters(100.0)
 sim = VARModel(N, N, p)
 sim.solve_magnetic()
-ok, k, r = converge(sim, tol=1e-9, sigma_decay=True, time_budget=80)
+ok, k, r = converge(sim, tol=1e-9, sigma_decay=True, time_budget=70)
 print(f"uniform: conv={ok} k={k} res={max(r['theta'],r['omega'],r['psi']):.2e}", flush=True)
 uni = sim.diagnostics()
 
@@ -22,7 +22,7 @@ Rn, Zn, info = gen.relax_grid_direct(sim.R, sim.Z, monitor(sim),
                                      max_outer=80, relax=0.6, tol=1e-6)
 print(f"grid: {info['sweeps']} Picard iters, residual {info['residual']:.2e}", flush=True)
 remap(sim, Rn, Zn); sim.solve_magnetic()
-ok2, k2, r2 = converge(sim, tol=1e-9, sigma_decay=True, time_budget=210)
+ok2, k2, r2 = converge(sim, tol=1e-9, sigma_decay=True, time_budget=175)
 print(f"adapted: conv={ok2} k={k2} res={max(r2['theta'],r2['omega'],r2['psi']):.2e}", flush=True)
 ad = sim.diagnostics()
 
@@ -57,7 +57,7 @@ ax[2].set_title("Streamlines (dashed red: melting isotherm)")
 ax[2].set_xlabel("Radius $R$"); ax[2].set_aspect('equal')
 
 fig.suptitle(
-    f"VAR melt pool, thesis Table 4.1 with $\\nu\\times100$ (Gr={p.Gr:.2e}, "
+    f"VAR melt pool (smootherstep mushy profile), thesis Table 4.1 with $\\nu\\times100$ (Gr={p.Gr:.2e}, "
     f"Ma={p.Ma:.2e}, Pr={p.Pr}, A={p.A:.1e}), {N}x{N}, "
     f"residuals $\\leq$ {max(r2['theta'],r2['omega'],r2['psi']):.1e}", fontsize=12)
 plt.tight_layout()
