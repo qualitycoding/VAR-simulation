@@ -14,8 +14,10 @@ files. All were produced by the scripts in `src/`.
 | file | produced by | contents |
 |---|---|---|
 | `figure_state.json` | `src/make_figure.py` | Diagnostics and residuals for the figure, uniform and adapted. |
-| `refine_smootherstep.json` | see `logs/refine_smootherstep.txt` | **Current formulation.** Thermal refinement, N=51,61,71,76,81,91,101, two-cell band, smootherstep; all converged <=1.8e-10. Source of the order 2.36 +/- 0.12 and the first-order fits in section 3 (`logs/orders_smootherstep.txt`, `logs/first_order_fit.txt`). |
+| `refine_smootherstep.json` | see `logs/refine_smootherstep.txt` | **Current formulation.** Thermal refinement, N=51,61,71,76,81,91,101, two-cell band, smootherstep; all converged <=1.8e-10. Source of the first-order fits in section 3. The heat-balance order 2.36 +/- 0.12 fitted to it is pre-asymptotic and withdrawn (`logs/orders_smootherstep.txt`, `logs/first_order_fit.txt`). |
+| `highres.json` | `src/run_highres.py --sizes 151,201,301`, see `logs/highres_run.txt` | **Current formulation.** N = 151, 201, 301 x 1, 2, 3 cells, all converged <=1e-9, warm-started. With `band_smootherstep.json` it gives the 18-case study and the extrapolated flow limits in section 4 (`logs/flow_limits.txt`). |
 | `band_smootherstep.json` | see `logs/band_smootherstep.txt` | **Current formulation.** Band-independence study (1-3 cells x N=51,76,101); all nine converged. Source of the section 4 table. |
+| (log only) | `logs/heat_balance_conduction_vs_flow.txt` | Heat balance with the flow switched off (order 2.00, N = 51-301) against with flow (limit about -5.3e-4). Source of the conservation-defect finding in section 3. |
 | `mechanism.json` | see `logs/mechanism_eigs_newton.txt`, `logs/newton_*.txt`, `logs/profile_*.txt` | Picard-map eigenvalues at the smootherstep fixed point; Newton-Krylov attempts on the linear ramp (not converged); first-order fits. |
 | `refine_converged.json` | see `logs/refine_converged.txt` | **Linear-ramp profile (superseded by smootherstep).** All meshes converged to <=1e-11. N=51,71,81,101 at a two-cell band. Previously the source of section 3; retained for the profile comparison. |
 | `n76_limit_cycle.json` | see `logs/n76_*.txt` | **Linear-ramp profile.** Evidence that the Picard iteration limit-cycles at N=76 with that profile: cycle statistics, damping variants, Anderson acceleration, neighbouring meshes. |
@@ -51,6 +53,6 @@ scan, because the energy equation does not see the D'Arcy term directly.
 
 ## Not included
 
-The high-resolution study (N of order 300-600) described in section 9 of
-the note has not been run. `src/run_highres.py` produces `highres.json`
-in the same schema as the files above.
+N = 601 has not been run: on the 1-core, 3 GB machine used, the sparse LU
+factors of the coupled block would not fit. Converged high-resolution states
+(~2-4 MB each) are not committed; `src/run_highres.py` regenerates them.

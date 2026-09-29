@@ -10,7 +10,10 @@ checkpoint*.npz
 state_N*.npz
 state_uniform.npz
 var_result.npz
-highres.json
+/highres.json
+src/highres.json
+hr_states/
+src/hr_states/
 *.log
 nohup.out
 

@@ -19,32 +19,30 @@ numbers in the source refer to that thesis. Parameters are its Table 4.1.
 
 - The discrete operators are consistent and second-order on curvilinear
   meshes, confirmed by manufactured solution (`tests/test_operators.py`).
-- The energy equation converges to machine precision on all seven meshes
-  tried (N = 51 to 101), and its global heat balance — whose exact value
-  is zero — converges at order 2.36 ± 0.12 (least-squares over the seven
-  meshes; 2.98 over the four finest).
-- Front-dependent integrals converge at about first order: the surface
-  temperature integral at p = 1.07, with N = 101 within 0.1% of the
-  limit. Molten volume and thermal energy are consistent with first
-  order, but their order is not pinned down.
+- With the flow switched off, the global heat balance converges to zero at
+  order 2.00 from N = 51 to 301.
 - The magnetic induction equation is solved exactly with the thesis arc
   condition (4.32) applied.
-- Steady solutions exist and converge along a continuation path from
-  Gr = 2.9e6 to Gr = 2.0e8.
+- At the verification parameters, on meshes up to 301x301 with all 18
+  cases converged, the flow integrals converge at first order to a limit
+  independent of the melt-front regularisation. Extrapolated per band, the
+  limits agree within about 1.5%: kinetic energy ~235, circulation ~0.64,
+  molten volume ~0.1395 (`results/data/highres.json`).
+- Steady solutions exist along a continuation path from Gr = 2.9e6 to
+  Gr = 2.0e8.
 
-**Not yet converged**
+**Not established**
 
-- **The flow integrals (kinetic energy, circulation) are not mesh- and
-  band-independent at the resolutions reached here.** The spread between
-  a 1-cell and a 3-cell mushy band is 33% in kinetic energy at N = 101.
-  It falls at roughly first order, so a few per cent needs N of order
-  300–600. `src/run_highres.py` exists to do exactly that.
-- Do not quote kinetic energy, circulation or psi_max from this package
-  as converged values.
-- **Only the heat balance converges at the order of the operators.** The
-  mushy band is a fixed number of cells wide, so front-dependent
-  quantities are expected to be limited to first order. Consistent with
-  the data; not separately tested.
+- **No single-mesh flow value is converged.** Even N = 301 is 3-12% short
+  of the extrapolated limit in kinetic energy. Quote the extrapolated
+  values, with their ~1-2% uncertainty, not a computed one.
+- **The convective term is not exactly conservative.** With flow, the heat
+  balance tends to about -2e-4 of the heat input instead of zero. The flow
+  limits are those of this scheme; their distance from the exact solution
+  of the thesis equations is unquantified. (An order of 2.36 reported
+  earlier for the heat balance was pre-asymptotic and is withdrawn.)
+- Front-dependent quantities converge at first order, because the melt-front
+  band is a fixed number of cells wide.
 
 **Known limitations**
 
@@ -82,7 +80,7 @@ numbers in the source refer to that thesis. Parameters are its Table 4.1.
     src/var_grid.py                 monitor-function Poisson grid generator
     src/run_checkpointed.py         continuation + adaptive epochs, resumable
     src/run_refinement.py           mesh-independence study
-    src/run_highres.py              the long job that is still outstanding
+    src/run_highres.py              resumable high-resolution band study
     src/make_figure.py              three-panel result figure
     tests/test_operators.py         manufactured-solution order verification
     tests/legacy_operator_check.py  reproduces the defect in the 2026 code
@@ -103,14 +101,14 @@ Tests add `src/` to the path themselves and can be run from the repository
 root. The run scripts expect to be invoked from inside `src/` and write
 their outputs to the working directory.
 
-The outstanding work is one command:
+The high-resolution band study is reproduced by:
 
-    BUDGET=14400 python run_highres.py 100 151,201,301,401
+    python run_highres.py --sizes 151,201,301 --slice 270   # repeat until ALL CASES DONE
 
-It appends to `highres.json` after every case and skips cases already
-present, so it can be interrupted and restarted freely. Expect hours:
-the block solve is ~2N^2 unknowns and a converged case at N = 101 takes
-about 75 s, with steep scaling.
+It works in wall-clock slices, saving the partial state and damping on
+pause, so it can be run in short sessions or killed and restarted. On one
+core with SuperLU the cost per sweep grows as about N^2.9; N = 301 takes
+~20 minutes per band, and N = 601 needs more than 3 GB for the LU factors.
 
 ## What changed from the earlier implementation
 

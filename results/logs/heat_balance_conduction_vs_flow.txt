@@ -1,0 +1,28 @@
+Test: heat imbalance with the flow switched off (pure conduction, radiation BCs)
+
+  N= 51  theta residual 3.4e-16  Newton its 40  imbalance -1.5303e-03  (0.4s)
+  N=101  theta residual 3.2e-16  Newton its 40  imbalance -3.8409e-04  (1.8s)
+  N=151  theta residual 4.1e-16  Newton its 40  imbalance -1.7081e-04  (4.8s)
+  N=201  theta residual 7.1e-16  Newton its 40  imbalance -9.6087e-05  (9.5s)
+  N=301  theta residual 6.0e-16  Newton its 40  imbalance -4.2699e-05  (25.9s)
+
+  pairwise order of |imbalance| (conduction only):
+    N= 51->101  p = 1.99
+    N=101->151  p = 2.00
+    N=151->201  p = 2.00
+    N=201->301  p = 2.00
+
+Same quantity WITH flow, two-cell band, all converged (smootherstep):
+  N= 51  imbalance +4.4520e-03
+  N= 61  imbalance +2.9752e-03
+  N= 71  imbalance +2.1897e-03
+  N= 76  imbalance +1.9693e-03
+  N= 81  imbalance +1.6018e-03
+  N= 91  imbalance +1.1995e-03
+  N=101  imbalance +8.1873e-04
+  N=151  imbalance +5.3698e-05
+  N=201  imbalance -1.6364e-04
+  N=301  imbalance -2.5205e-04
+
+  fit imbalance = C h^p + B:  p = 1.82, C = 6.16, B = -5.296e-04  (B is the h->0 limit; exact answer 0)
+  B relative to net heat input: -2.13e-04
