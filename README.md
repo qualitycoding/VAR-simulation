@@ -19,30 +19,37 @@ numbers in the source refer to that thesis. Parameters are its Table 4.1.
 
 - The discrete operators are consistent and second-order on curvilinear
   meshes, confirmed by manufactured solution (`tests/test_operators.py`).
-- With the flow switched off, the global heat balance converges to zero at
-  order 2.00 from N = 51 to 301.
+- Convection is in the flux form of the thesis equations and conserves
+  exactly (`tests/test_convection.py`). The default scheme is
+  `flux_vanleer`: order ~1.55 in L2, 1 in max norm.
+- The global heat balance converges to zero at second order, with or
+  without flow (order 2.053 +/- 0.008 on N = 101-301).
 - The magnetic induction equation is solved exactly with the thesis arc
   condition (4.32) applied.
 - At the verification parameters, on meshes up to 301x301 with all 18
   cases converged, the flow integrals converge at first order to a limit
   independent of the melt-front regularisation. Extrapolated per band, the
-  limits agree within about 1.5%: kinetic energy ~235, circulation ~0.64,
-  molten volume ~0.1395 (`results/data/highres.json`).
+  limits agree within about 1.8%: kinetic energy ~253, circulation ~0.658,
+  molten volume ~0.1389 (`results/data/flux_highres.json`).
 - Steady solutions exist along a continuation path from Gr = 2.9e6 to
-  Gr = 2.0e8.
+  Gr = 2.0e8 (computed with the earlier convection scheme).
 
 **Not established**
 
-- **No single-mesh flow value is converged.** Even N = 301 is 3-12% short
-  of the extrapolated limit in kinetic energy. Quote the extrapolated
-  values, with their ~1-2% uncertainty, not a computed one.
-- **The convective term is not exactly conservative.** With flow, the heat
-  balance tends to about -2e-4 of the heat input instead of zero. The flow
-  limits are those of this scheme; their distance from the exact solution
-  of the thesis equations is unquantified. (An order of 2.36 reported
-  earlier for the heat balance was pre-asymptotic and is withdrawn.)
+- **No single-mesh flow value is converged.** N = 301 is 2-11% short of
+  the extrapolated kinetic-energy limit. Quote the extrapolated values,
+  with their ~1-2% uncertainty.
 - Front-dependent quantities converge at first order, because the melt-front
   band is a fixed number of cells wide.
+
+**Withdrawn**
+
+- Flow limits reported in earlier versions (KE ~235, circulation ~0.64).
+  The original advective convection omitted the vortex-stretching term
+  -U w / R of thesis (4.41), so those results solved a different equation.
+  At N = 301 the corrected equation gives KE 8.8% higher.
+- A heat-balance order of 2.36, and a heat-balance offset of -2e-4 of the
+  heat input: both artefacts of the non-conservative scheme.
 
 **Known limitations**
 

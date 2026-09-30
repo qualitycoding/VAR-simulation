@@ -1,0 +1,11 @@
+Heat imbalance, two-cell band, verification case. Old advective scheme vs the two flux schemes.
+
+   N  old advective |  flux_upwind      res        KE | flux_vanleer      res        KE
+  51    +4.4520e-03 |  +4.5151e-03  4.4e-14   141.109 |  +3.3667e-03  1.8e-13   141.158
+  76    +1.9693e-03 |  +2.8677e-03  2.0e-13   176.299 |  +1.9325e-03  5.3e-12   180.220
+ 101    +8.1873e-04 |  +1.8028e-03  1.7e-12   194.816 |  +1.1555e-03  1.6e-12   198.944
+
+pairwise order of |imbalance|:
+  old           51->76:  2.01   76->101:  3.05
+  flux_upwind   51->76:  1.12   76->101:  1.61
+  flux_vanleer  51->76:  1.37   76->101:  1.79

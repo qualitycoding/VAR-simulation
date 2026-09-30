@@ -7,7 +7,7 @@ files. All were produced by the scripts in `src/`.
 
 | file | produced by | what it shows |
 |---|---|---|
-| `var_converged_results.png` | `src/make_figure.py` | Converged solution at the thesis section 4.5.1 parameters, 101x101, after one adaptation epoch, smootherstep profile. Residuals <= 8.8e-12. |
+| `var_converged_results.png` | `src/make_figure.py` | Converged solution at the thesis section 4.5.1 parameters, 101x101, after one adaptation epoch, flux-form convection. Residuals <= 5.5e-12. |
 
 ## data/
 
@@ -15,7 +15,9 @@ files. All were produced by the scripts in `src/`.
 |---|---|---|
 | `figure_state.json` | `src/make_figure.py` | Diagnostics and residuals for the figure, uniform and adapted. |
 | `refine_smootherstep.json` | see `logs/refine_smootherstep.txt` | **Current formulation.** Thermal refinement, N=51,61,71,76,81,91,101, two-cell band, smootherstep; all converged <=1.8e-10. Source of the first-order fits in section 3. The heat-balance order 2.36 +/- 0.12 fitted to it is pre-asymptotic and withdrawn (`logs/orders_smootherstep.txt`, `logs/first_order_fit.txt`). |
-| `highres.json` | `src/run_highres.py --sizes 151,201,301`, see `logs/highres_run.txt` | **Current formulation.** N = 151, 201, 301 x 1, 2, 3 cells, all converged <=1e-9, warm-started. With `band_smootherstep.json` it gives the 18-case study and the extrapolated flow limits in section 4 (`logs/flow_limits.txt`). |
+| `highres.json` | `src/run_highres.py --sizes 151,201,301`, see `logs/highres_run.txt` | **Original advective convection (superseded).** N = 151, 201, 301 x 1, 2, 3 cells, all converged <=1e-9, warm-started. With `band_smootherstep.json` it gave the withdrawn flow limits (KE ~235) (`logs/flow_limits.txt`). |
+| `flux_highres.json` | `src/run_highres.py --sizes 51,76,101,151,201,301 --cells 1,3,2 --convection flux_vanleer`, see `logs/flux_*.txt` | **Current formulation.** 18 cases, all converged <=7.9e-10. Source of sections 3 and 4 of the note: the heat balance to zero at order ~2 and the extrapolated flow limits (`flux_flow_limits.json`). |
+| `flux_scheme_comparison.json` | see `logs/flux_scheme_comparison.txt` | Old advective scheme vs `flux_upwind` vs `flux_vanleer` at N = 51, 76, 101. |
 | `band_smootherstep.json` | see `logs/band_smootherstep.txt` | **Current formulation.** Band-independence study (1-3 cells x N=51,76,101); all nine converged. Source of the section 4 table. |
 | (log only) | `logs/heat_balance_conduction_vs_flow.txt` | Heat balance with the flow switched off (order 2.00, N = 51-301) against with flow (limit about -5.3e-4). Source of the conservation-defect finding in section 3. |
 | `mechanism.json` | see `logs/mechanism_eigs_newton.txt`, `logs/newton_*.txt`, `logs/profile_*.txt` | Picard-map eigenvalues at the smootherstep fixed point; Newton-Krylov attempts on the linear ramp (not converged); first-order fits. |
@@ -35,6 +37,12 @@ files. All were produced by the scripts in `src/`.
 | `figure_state.npz` | R, Z, theta, psi, omega, G, F, U, W for the figure. Current formulation. |
 
 ## Provenance caveat
+
+The current formulation is: smootherstep mushy profile, cell-width band, and
+`flux_vanleer` convection. Every file not listed as using it predates the
+flux-form convection and therefore omits the vortex-stretching term; those
+files are retained as the record of what was earlier reported.
+
 
 `mushy_scan_76.json`, `mushy_resolved.json`, `refine_100.json` and the
 flow entries in `var_result.json` predate the move to a cell-width mushy

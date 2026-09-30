@@ -116,7 +116,7 @@ class Parameters:
         #                       Measured order about 1.55 in L2 and 1 in max
         #                       norm (the limiter clips at extrema); errors
         #                       30x smaller than flux_upwind at N = 321.
-        self.convection = "advective_upwind"
+        self.convection = "flux_vanleer"
 
     def summary(self):
         return (f"Pr={self.Pr}  Gr={self.Gr:.3e}  Ma={self.Ma:.3e}  "

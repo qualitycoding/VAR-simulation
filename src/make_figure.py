@@ -57,7 +57,7 @@ ax[2].set_title("Streamlines (dashed red: melting isotherm)")
 ax[2].set_xlabel("Radius $R$"); ax[2].set_aspect('equal')
 
 fig.suptitle(
-    f"VAR melt pool (smootherstep mushy profile), thesis Table 4.1 with $\\nu\\times100$ (Gr={p.Gr:.2e}, "
+    f"VAR melt pool (flux-form convection), thesis Table 4.1 with $\\nu\\times100$ (Gr={p.Gr:.2e}, "
     f"Ma={p.Ma:.2e}, Pr={p.Pr}, A={p.A:.1e}), {N}x{N}, "
     f"residuals $\\leq$ {max(r2['theta'],r2['omega'],r2['psi']):.1e}", fontsize=12)
 plt.tight_layout()

@@ -1,0 +1,6 @@
+Heat imbalance, flux_vanleer, two-cell band: N=51: +3.3667e-03, N=76: +1.9325e-03, N=101: +1.1555e-03, N=151: +5.0152e-04, N=201: +2.8090e-04, N=301: +1.2079e-04
+  fit C h^p + B over all six meshes: p = 1.34, B = -2.68e-04 (-1.1e-04 of heat input)
+  fit C h^p + B over N >= 101: p = 2.05, B = -4.66e-08 (-1.9e-08 of heat input)
+  pure power law (B = 0) over N >= 101: p = 2.053 +/- 0.008
+
+  old advective scheme for comparison: limit B = -5.3e-4 (-2.1e-4 of heat input)
