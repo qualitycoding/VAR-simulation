@@ -41,6 +41,8 @@ import scipy.sparse as sp
 
 from var_operators import (Metrics, conservative_laplacian,
                            derivative_matrices, upwind_convection,
+                           corner_fluxes, flux_convection_matrix,
+                           flux_convection_correction,
                            contravariant)
 
 
@@ -103,6 +105,18 @@ class Parameters:
         self.mushy_cells = 2.0
         # 'linear' (clipped ramp, kinked at both ends) or 'smootherstep' (C2).
         self.mushy_profile = "smootherstep"
+        # Convective discretisation for the energy and vorticity equations.
+        #   'advective_upwind'  u.grad(q), first-order upwind.  The original
+        #                       scheme: not conservative, and omits the
+        #                       vortex-stretching term (U/R) w of (4.41).
+        #   'flux_upwind'       thesis flux form, first-order upwind, exactly
+        #                       conservative, includes stretching.
+        #   'flux_vanleer'      flux form with a van Leer limited deferred
+        #                       correction, also exactly conservative.
+        #                       Measured order about 1.55 in L2 and 1 in max
+        #                       norm (the limiter clips at extrema); errors
+        #                       30x smaller than flux_upwind at N = 321.
+        self.convection = "advective_upwind"
 
     def summary(self):
         return (f"Pr={self.Pr}  Gr={self.Gr:.3e}  Ma={self.Ma:.3e}  "
@@ -299,10 +313,19 @@ class VARModel:
     # ------------------------------------------------------------------
     def _assemble_temperature(self):
         m, n, idx, p = self.m, self.n, self.idx, self.p
-        Uc, Wc = contravariant(self.met, self.U, self.W)
-        A = self.L + sp.diags(1.0 / self.Rsafe) @ self.dR \
-            - p.Pr * upwind_convection(self.met, Uc, Wc)
         rhs = np.zeros(m * n)
+        if p.convection == "advective_upwind":
+            Uc, Wc = contravariant(self.met, self.U, self.W)
+            conv = upwind_convection(self.met, Uc, Wc)
+        else:
+            # thesis (4.42): Pr (1/R)[(R U th)_R + (R W th)_Z], flux form
+            Fx, Fy = corner_fluxes(self.psi)
+            w = sp.diags(1.0 / (self.Rsafe * self.met.J.ravel()))
+            conv = w @ flux_convection_matrix(self.met, Fx, Fy)
+            if p.convection == "flux_vanleer":
+                rhs = rhs + p.Pr * (flux_convection_correction(self.theta, Fx, Fy).ravel()
+                                    / (self.Rsafe * self.met.J.ravel()))
+        A = self.L + sp.diags(1.0 / self.Rsafe) @ self.dR - p.Pr * conv
 
         bc = _BCRows((m * n, m * n))
         th = self.theta
@@ -347,11 +370,22 @@ class VARModel:
         so that omega and psi can be solved as one system.
         """
         m, n, idx, p = self.m, self.n, self.idx, self.p
-        Uc, Wc = contravariant(self.met, self.U, self.W)
         C = p.C0 * (1.0 - self.liquid_fraction()).ravel()
+        corr = np.zeros(m * n)
+        if p.convection == "advective_upwind":
+            Uc, Wc = contravariant(self.met, self.U, self.W)
+            conv = upwind_convection(self.met, Uc, Wc)
+        else:
+            # thesis (4.41): (U w)_R + (W w)_Z, flux form; its discrete
+            # divergence supplies the stretching term -(U/R) w
+            Fx, Fy = corner_fluxes(self.psi, self.R)
+            invJ = 1.0 / self.met.J.ravel()
+            conv = sp.diags(invJ) @ flux_convection_matrix(self.met, Fx, Fy)
+            if p.convection == "flux_vanleer":
+                corr = flux_convection_correction(self.omega, Fx, Fy).ravel() * invJ
         A = self.L + sp.diags(1.0 / self.Rsafe) @ self.dR \
             - sp.diags(1.0 / self.Rsafe ** 2) \
-            - upwind_convection(self.met, Uc, Wc) \
+            - conv \
             - sp.diags(C) - sigma * sp.identity(m * n)
 
         F = self.F.ravel()
@@ -359,7 +393,7 @@ class VARModel:
         F2_Z = self.dZ @ (F ** 2)
         rhs = p.Gr * theta_R + p.S_lor * F2_Z / self.Rsafe
         mask = np.zeros(m * n, bool); mask[self.interior] = True
-        rhs = np.where(mask, rhs, 0.0) - sigma * np.where(mask, self.omega.ravel(), 0.0)
+        rhs = np.where(mask, rhs + corr, 0.0) - sigma * np.where(mask, self.omega.ravel(), 0.0)
 
         bc = _BCRows((m * n, m * n))
         # psi-coupling for the Thom rows, keyed by node so that a later

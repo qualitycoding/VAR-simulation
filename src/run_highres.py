@@ -50,7 +50,7 @@ def warm_start(sim, state_path):
 
 
 def run_case(N, cells, states, slice_end, max_sweeps, check_every=10,
-             warm_sigma=0.05, tol=1e-9):
+             warm_sigma=0.05, tol=1e-9, convection=None):
     """Advance one case until converged or the slice ends.
 
     Returns (result_dict or None, status) with status 'done' or 'paused'.
@@ -62,6 +62,8 @@ def run_case(N, cells, states, slice_end, max_sweeps, check_every=10,
     t0 = time.time()
     p = Parameters(100.0)
     p.mushy_cells = cells
+    if convection:
+        p.convection = convection
     sim = VARModel(N, N, p)
     sim.solve_magnetic()
     scale = float(np.max(np.abs(sim.L).dot(np.ones(sim.m * sim.n))))
@@ -119,7 +121,8 @@ def run_case(N, cells, states, slice_end, max_sweeps, check_every=10,
 
     mx = max(r["theta"], r["omega"], r["psi"])
     d = sim.diagnostics()
-    d.update(N=N, cells=cells, profile=p.mushy_profile, converged=bool(mx < tol),
+    d.update(N=N, cells=cells, profile=p.mushy_profile, convection=p.convection,
+             converged=bool(mx < tol),
              tolerance=tol, residual_trace=trace,
              sweeps=k, warm_start_from=(None if source < 0 else source),
              seconds=spent + time.time() - t0, residual_max=mx)
@@ -139,6 +142,8 @@ def main():
     ap.add_argument("--slice", type=float, default=1e9,
                     help="wall-clock seconds to work before pausing")
     ap.add_argument("--max-sweeps", type=int, default=1500)
+    ap.add_argument("--convection", default=None,
+                    help="advective_upwind | flux_upwind | flux_vanleer (default: Parameters)")
     ap.add_argument("--tol", type=float, default=1e-9)
     ap.add_argument("--warm-sigma", type=float, default=0.05)
     a = ap.parse_args()
@@ -155,13 +160,14 @@ def main():
                 print("slice exhausted before next case", flush=True)
                 return
             d, status, k, mx = run_case(N, c, a.states, slice_end, a.max_sweeps,
-                                        warm_sigma=a.warm_sigma, tol=a.tol)
+                                        warm_sigma=a.warm_sigma, tol=a.tol,
+                                        convection=a.convection)
             if status == "paused":
                 print(f"N={N:4d} cells={c:g} paused at sweep {k}, residual {mx:.1e}", flush=True)
                 return
             out.append(d)
             json.dump(out, open(a.out, "w"), indent=2, default=float)
-            print(f"N={N:4d} cells={c:g} converged={d['converged']} "
+            print(f"N={N:4d} cells={c:g} [{d['convection']}] converged={d['converged']} "
                   f"res={d['residual_max']:.1e} sweeps={d['sweeps']} "
                   f"warm_from={d['warm_start_from']} "
                   f"molten={d['molten_volume']:.8f} KE={d['kinetic_energy']:.5f} "

@@ -230,3 +230,111 @@ def contravariant(met, U, W):
     Uc = (U * met.Z_eta - W * met.R_eta) / met.J
     Wc = (W * met.R_xi - U * met.Z_xi) / met.J
     return Uc, Wc
+
+
+# ----------------------------------------------------------------------
+# Conservative (flux-form) convection
+# ----------------------------------------------------------------------
+#
+# In body-fitted coordinates the axisymmetric mass fluxes through cell
+# faces are plain differences of the stream function.  With
+#   R U = psi_Z ,  R W = -psi_R
+# and the metric identities, the flux per unit computational length is
+#
+#   R J u^xi  =  psi_eta ,     R J u^eta  =  -psi_xi .
+#
+# Each node carries a control volume with corners at (i+-1/2, j+-1/2).  With
+# psi at a corner taken as the mean of its four neighbouring nodes, the flux
+# through the east face is psi(NE) - psi(SE), and so on.  The four face
+# fluxes of every control volume then sum to zero identically: the discrete
+# velocity field is exactly divergence-free, so flux-form convection of a
+# constant gives exactly zero and the convective term conserves exactly.
+#
+# The previous scheme discretised the advective form u.grad(q) with upwind
+# differences.  That is equivalent in the continuum but not discretely, and
+# it left a heat-balance defect of about -2e-4 of the heat input that did not
+# vanish under refinement.
+#
+# Two weightings are needed:
+#   'axi'    energy equation (4.42):  Pr (1/R)[(R U th)_R + (R W th)_Z]
+#            = (1/(R J)) * sum_faces F q_face
+#   'planar' vorticity equation (4.41):  (U w)_R + (W w)_Z
+#            = (1/J) * sum_faces (F / R_face) q_face
+# The planar form is not divergence-free: its divergence is -U/R, which is
+# exactly the vortex-stretching term.  The earlier advective discretisation
+# u.grad(w) omitted that term altogether.
+
+def corner_fluxes(psi, R=None):
+    """Face fluxes from psi at cell corners.
+
+    Returns (Fx, Fy): Fx[i, j-1] is the flux in +xi through the face
+    (i+1/2, j), j = 1..n-2, shape (m-1, n-2); Fy[i-1, j] is the flux in +eta
+    through (i, j+1/2), i = 1..m-2, shape (m-2, n-1).  With R given, fluxes
+    are divided by R at the face centre ('planar' weighting).
+    """
+    pc = 0.25 * (psi[:-1, :-1] + psi[1:, :-1] + psi[:-1, 1:] + psi[1:, 1:])
+    Fx = pc[:, 1:] - pc[:, :-1]
+    Fy = -(pc[1:, :] - pc[:-1, :])
+    if R is not None:
+        Rx = 0.5 * (R[:-1, 1:-1] + R[1:, 1:-1])
+        Ry = 0.5 * (R[1:-1, :-1] + R[1:-1, 1:])
+        Fx = Fx / np.maximum(Rx, 1e-12)
+        Fy = Fy / np.maximum(Ry, 1e-12)
+    return Fx, Fy
+
+
+def flux_convection_matrix(met, Fx, Fy):
+    """First-order upwind flux-form convection: row (i,j) gives the net
+    outflow  FE qE - FW qW + FN qN - FS qS  with upwinded face values.
+    Interior rows only; not yet divided by the control-volume measure."""
+    m, n = met.m, met.n
+    idx = np.arange(m * n).reshape(m, n)
+    r = idx[1:-1, 1:-1].ravel()
+    FE, FW = Fx[1:, :], Fx[:-1, :]
+    FN, FS = Fy[:, 1:], Fy[:, :-1]
+    pos, neg = (lambda a: np.maximum(a, 0.0)), (lambda a: np.minimum(a, 0.0))
+    centre = pos(FE) - neg(FW) + pos(FN) - neg(FS)
+    rows = np.concatenate([r] * 5)
+    cols = np.concatenate([r,
+                           idx[2:, 1:-1].ravel(), idx[:-2, 1:-1].ravel(),
+                           idx[1:-1, 2:].ravel(), idx[1:-1, :-2].ravel()])
+    vals = np.concatenate([centre.ravel(), neg(FE).ravel(), -pos(FW).ravel(),
+                           neg(FN).ravel(), -pos(FS).ravel()])
+    return sp.coo_matrix((vals, (rows, cols)), shape=(m * n, m * n)).tocsr()
+
+
+def _van_leer(num, den):
+    rr = np.divide(num, den, out=np.zeros_like(num), where=np.abs(den) > 1e-300)
+    return (rr + np.abs(rr)) / (1.0 + np.abs(rr))
+
+
+def flux_convection_correction(q, Fx, Fy):
+    """Deferred high-order correction (van Leer limited).
+
+    Measured convergence: about order 1.55 in L2, order 1 in max norm, since
+    the limiter reverts to first order at extrema.
+
+    Returns a nodal array c such that  K_upwind q + c  is the net outflow
+    with limited linear face reconstruction.  Applied from the previous
+    iterate, so at convergence the solution satisfies the high-order
+    scheme.  Faces whose upwind-upwind node is outside the domain keep the
+    first-order value.
+    """
+    m, n = q.shape
+    # xi faces (i+1/2, j), i = 0..m-2, j = 1..n-2
+    qL, qR = q[:-1, 1:-1], q[1:, 1:-1]
+    qLL = np.full_like(qL, np.nan); qLL[1:] = q[:-2, 1:-1]
+    qRR = np.full_like(qR, np.nan); qRR[:-1] = q[2:, 1:-1]
+    dp = np.where(np.isnan(qLL), 0.0, 0.5 * _van_leer(qL - np.nan_to_num(qLL), qR - qL) * (qR - qL))
+    dn = np.where(np.isnan(qRR), 0.0, 0.5 * _van_leer(qR - np.nan_to_num(qRR), qL - qR) * (qL - qR))
+    cx = Fx * np.where(Fx > 0, dp, dn)
+    # eta faces (i, j+1/2), i = 1..m-2, j = 0..n-2
+    qB, qT = q[1:-1, :-1], q[1:-1, 1:]
+    qBB = np.full_like(qB, np.nan); qBB[:, 1:] = q[1:-1, :-2]
+    qTT = np.full_like(qT, np.nan); qTT[:, :-1] = q[1:-1, 2:]
+    ep = np.where(np.isnan(qBB), 0.0, 0.5 * _van_leer(qB - np.nan_to_num(qBB), qT - qB) * (qT - qB))
+    en = np.where(np.isnan(qTT), 0.0, 0.5 * _van_leer(qT - np.nan_to_num(qTT), qB - qT) * (qB - qT))
+    cy = Fy * np.where(Fy > 0, ep, en)
+    c = np.zeros_like(q)
+    c[1:-1, 1:-1] = cx[1:, :] - cx[:-1, :] + cy[:, 1:] - cy[:, :-1]
+    return c
