@@ -89,7 +89,10 @@ numbers in the source refer to that thesis. Parameters are its Table 4.1.
     src/run_refinement.py           mesh-independence study
     src/run_highres.py              resumable high-resolution band study
     src/make_figure.py              three-panel result figure
+    src/newton_krylov.py            Newton-Krylov on the Picard fixed point; stability of the sweep
+    src/anderson_experiment.py      negative result: Anderson acceleration (kept, not used)
     tests/test_operators.py         manufactured-solution order verification
+    tests/test_convection.py        convection scheme order and conservation checks
     tests/legacy_operator_check.py  reproduces the defect in the 2026 code
     results/MANIFEST.md             what produced every file, and caveats
     docs/technical-note.html        the technical note
