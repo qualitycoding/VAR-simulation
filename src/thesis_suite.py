@@ -21,8 +21,10 @@ def metrics(sim, ok, k, r, f):
                 theta_max=float(sim.theta.max()), axis_melt_Z=axis_depth(sim),
                 molten=d["molten_volume"], KE=d["kinetic_energy"], imbalance=d["imbalance"])
 
-def run(src, N, conv, budget, lor=LOR, profile=None, c0=None, rth=0.5, rfl=1.0, seq=None, save=None):
-    p = Parameters(500.0); p.source = src; p.convection = conv; setvf(p, 500.0, lor)
+def run(src, N, conv, budget, lor=LOR, profile=None, c0=None, rth=0.5, rfl=1.0, seq=None, save=None, h=None):
+    p = Parameters(500.0); p.source = src;
+    if h is not None: p.H1 = p.H2 = p.H3 = float(h)
+    p.convection = conv; setvf(p, 500.0, lor)
     if profile: p.mushy_profile = profile
     if c0: p.C0 = c0
     sim = VARModel(N, N, p); sim.solve_magnetic()

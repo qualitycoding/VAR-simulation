@@ -20,6 +20,7 @@ Branch `thesis-reproduction-suite`. Compares the solver with Polton (1998), chap
 | `suite/` | N = 21 to 61 runs at Lorentz multiplier 2457; nodal runs | 2457 | band and nodal |
 | `suite2/` | Candidate coefficients, N = 21, 31, 41 | step 2700, Gaussian 11500 | band and nodal |
 | `suite3/` | Refinement N = 61, 101, 151; `.npz` states at nu x100 and x70; `small_*` are N = 21, 31 | step 2700, Gaussian 11500 | band, flux_vanleer |
+| `suite4/` | Heat-transfer test (h1 = h2 = h3), step source, N = 21; files `h0_`, `h50_` (H = 50 dimensionless), `H0.2_`, `H2.0_` (scaled) | step 2700 | band, flux_vanleer |
 | `probes/` | Earlier exploratory probes (thesis_probe1-4, gauss_probe, flip_scan, variations_probe1-3) | various | various |
 
 ## Caveats

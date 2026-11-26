@@ -56,3 +56,13 @@ Band treatment, flux_vanleer, candidate coefficients (step 2700, Gaussian 11500)
 ## N = 151 refinement (suite3/)
 Band treatment, flux_vanleer, candidate coefficients. Step psi extreme at nu x200, 125, 100, 85, 70: -0.85, -1.44, -1.79, -2.07, -2.47 (KE 40, 108, 164, 220, 308; heat-balance imbalance 0.03% to 0.3%). Gaussian psi max: 0.45, 0.82, 1.03, 1.20, 1.43 (KE 21, 62, 95, 125, 171). Geometry at nu x100: step centre (0.67, 1.42), cell R 0.21 to 0.94, down to Z 0.86; Gaussian centre (0.37, 1.40), zero contour R 0.09 to 0.81, down to Z 0.89.
 Extrapolation of the nu x100 extreme from N = 61, 101, 151: step -1.43, -1.69, -1.79 gives observed order about 1.65 and limits -1.85 (second-order fit) to -2.04 (first-order fit), about 1.9 times the thesis' -1. Gaussian 0.93, 0.99, 1.03 gives a limit of about 1.04 to 1.10 (thesis about 0.8 to 1); the observed order is poorly determined (0.3) so this limit is uncertain. Conclusion unchanged: Gaussian cell reproduces Figure 4.6; the step cell has the thesis' shape and position but about 1.9 times its strength; the outward second cell is absent.
+
+## Test case: heat-transfer parameters h1 = h2 = h3 = 50 (thesis 4.5.2.2, Figures 4.18 and 4.19; suite4/)
+Thesis claim: h1, h2, h3 have very little effect; h = 50 and h = 500 give results like Figure 4.14. Solver: step source, 21 x 21, band, flux_vanleer, Lorentz 2700, ladder to nu x70 (psi extreme, theta max, axis melt depth Z, KE).
+| Case | psi extreme | theta max | axis melt Z | KE |
+|---|---|---|---|---|
+| h = 0 (baseline) | -1.11 | 1.280 | 1.225 | 36.1 |
+| H = 0.2 (h = 50 W m-2 K-1 scaled by a/K = 0.1/25) | -0.43 | 1.256 | 1.265 | 5.7 |
+| H = 2 (h = 500 scaled) | 0 | 1.065 | 1.45 (pool almost extinguished) | 0 |
+| H = 50 taken as dimensionless | 0 | 0.50 (no melting) | none | 0 |
+Result: not reproduced. Temperatures change modestly at H = 0.2 but the flow falls by about 60% and the pool vanishes at H = 2, whereas the thesis reports little effect at either value. Reading h as already dimensionless removes melting entirely, so the thesis cannot have meant that. The conversion H = h a / K and how h enters the thesis boundary conditions (top, side, base) are inferred, not stated; without an appendix this cannot be settled. All runs converged with heat-balance imbalance below 1%.
