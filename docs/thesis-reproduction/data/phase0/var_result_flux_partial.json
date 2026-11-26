@@ -1,0 +1,248 @@
+{
+  "m": 101,
+  "n": 101,
+  "target_viscosity_factor": 12.0,
+  "continuation": [
+    {
+      "viscosity_factor": 100.0,
+      "Gr": 2900000.0,
+      "Ma": 900.0,
+      "A": 0.06,
+      "converged": true,
+      "sweeps": 100,
+      "residuals": {
+        "theta": 1.1166307992959398e-07,
+        "omega": 0.001554331707647378,
+        "psi": 2.753810409141331e-15,
+        "G": 2.2194581783075234e-16
+      },
+      "diagnostics": {
+        "molten_volume": 0.1415890049489398,
+        "kinetic_energy": 196.0129564681492,
+        "circulation": 0.5460215816583547,
+        "enstrophy": 91624.10077925134,
+        "thermal_energy": 3.0988782489148567,
+        "surface_temp_integral": 3.0817013320222046,
+        "heat_in_AC": 2.4886963685775876,
+        "heat_out_DC": 2.4858854953086587,
+        "heat_out_OD": 0.0,
+        "imbalance": 0.0011294560897099225,
+        "theta_max": 1.2128309310443923,
+        "psi_max": 1.4604206117463732,
+        "omega_max": 1511.5336382011565,
+        "min_jacobian": 0.00014999999999999833
+      }
+    },
+    {
+      "viscosity_factor": 70.0,
+      "Gr": 5918367.346938776,
+      "Ma": 1836.734693877551,
+      "A": 0.041999999999999996,
+      "converged": true,
+      "sweeps": 50,
+      "residuals": {
+        "theta": 2.1006331088238162e-07,
+        "omega": 0.0014630162560836002,
+        "psi": 3.3795332829238712e-15,
+        "G": 2.2194581783075234e-16
+      },
+      "diagnostics": {
+        "molten_volume": 0.13627082167370436,
+        "kinetic_energy": 380.1546298774182,
+        "circulation": 0.7578783397502334,
+        "enstrophy": 220188.6450420058,
+        "thermal_energy": 3.09189955665863,
+        "surface_temp_integral": 3.0836264999554275,
+        "heat_in_AC": 2.4943448851378323,
+        "heat_out_DC": 2.488580321156995,
+        "heat_out_OD": 0.0,
+        "imbalance": 0.0023110533010829845,
+        "theta_max": 1.2011128263308883,
+        "psi_max": 2.026970345633178,
+        "omega_max": 2416.7970643597,
+        "min_jacobian": 0.00014999999999999833
+      }
+    },
+    {
+      "viscosity_factor": 50.0,
+      "Gr": 11600000.0,
+      "Ma": 3600.0,
+      "A": 0.03,
+      "converged": true,
+      "sweeps": 50,
+      "residuals": {
+        "theta": 6.326279492258972e-08,
+        "omega": 0.0003174680132779167,
+        "psi": 6.010799974296544e-15,
+        "G": 2.2194581783075234e-16
+      },
+      "diagnostics": {
+        "molten_volume": 0.13008792531216934,
+        "kinetic_energy": 671.3251106199813,
+        "circulation": 1.0007236228425618,
+        "enstrophy": 495835.00327849656,
+        "thermal_energy": 3.0845609297911563,
+        "surface_temp_integral": 3.085319042033718,
+        "heat_in_AC": 2.5034866169222716,
+        "heat_out_DC": 2.4929911792954464,
+        "heat_out_OD": 0.0,
+        "imbalance": 0.0041923282337047165,
+        "theta_max": 1.189001319960477,
+        "psi_max": 2.6910731583985728,
+        "omega_max": 3885.4530436396562,
+        "min_jacobian": 0.00014999999999999833
+      }
+    },
+    {
+      "viscosity_factor": 35.0,
+      "Gr": 23673469.387755103,
+      "Ma": 7346.938775510204,
+      "A": 0.020999999999999998,
+      "converged": true,
+      "sweeps": 50,
+      "residuals": {
+        "theta": 4.601149672132006e-08,
+        "omega": 0.0001386390385014557,
+        "psi": 1.2767337660591461e-14,
+        "G": 2.2194581783075234e-16
+      },
+      "diagnostics": {
+        "molten_volume": 0.12260447199689087,
+        "kinetic_energy": 1157.3373189838705,
+        "circulation": 1.2947220322629085,
+        "enstrophy": 1131199.942172308,
+        "thermal_energy": 3.076656689550642,
+        "surface_temp_integral": 3.0866026376177285,
+        "heat_in_AC": 2.517964880974357,
+        "heat_out_DC": 2.5002146985762193,
+        "heat_out_OD": 0.0,
+        "imbalance": 0.007049416190137334,
+        "theta_max": 1.1754154670181327,
+        "psi_max": 3.434016726544674,
+        "omega_max": 6061.143017681225,
+        "min_jacobian": 0.00014999999999999833
+      }
+    },
+    {
+      "viscosity_factor": 25.0,
+      "Gr": 46400000.0,
+      "Ma": 14400.0,
+      "A": 0.015,
+      "converged": true,
+      "sweeps": 50,
+      "residuals": {
+        "theta": 1.2423314918611366e-08,
+        "omega": 2.0445557859410252e-05,
+        "psi": 1.7143592939831348e-14,
+        "G": 2.2194581783075234e-16
+      },
+      "diagnostics": {
+        "molten_volume": 0.11533587748813867,
+        "kinetic_energy": 1817.70480538759,
+        "circulation": 1.581879820463609,
+        "enstrophy": 2399314.662317077,
+        "thermal_energy": 3.0700063396177213,
+        "surface_temp_integral": 3.086876546412863,
+        "heat_in_AC": 2.5363154420996845,
+        "heat_out_DC": 2.509174351288594,
+        "heat_out_OD": 0.0,
+        "imbalance": 0.010700991824826726,
+        "theta_max": 1.1623796166108518,
+        "psi_max": 4.310977573863095,
+        "omega_max": 11238.855515910822,
+        "min_jacobian": 0.00014999999999999833
+      }
+    },
+    {
+      "viscosity_factor": 18.0,
+      "Gr": 89506172.83950618,
+      "Ma": 27777.777777777777,
+      "A": 0.010799999999999999,
+      "converged": true,
+      "sweeps": 50,
+      "residuals": {
+        "theta": 2.424091948711726e-09,
+        "omega": 3.2432849217753356e-06,
+        "psi": 4.446681054628023e-14,
+        "G": 2.2194581783075234e-16
+      },
+      "diagnostics": {
+        "molten_volume": 0.10722723929025971,
+        "kinetic_energy": 2762.781295454609,
+        "circulation": 1.894684368929184,
+        "enstrophy": 5131683.270001908,
+        "thermal_energy": 3.063259831560311,
+        "surface_temp_integral": 3.086324579860028,
+        "heat_in_AC": 2.5592728761251538,
+        "heat_out_DC": 2.5199862840995246,
+        "heat_out_OD": 0.0,
+        "imbalance": 0.0153506851075258,
+        "theta_max": 1.150007725248769,
+        "psi_max": 5.1054225484764855,
+        "omega_max": 21756.39363458965,
+        "min_jacobian": 0.00014999999999999833
+      }
+    },
+    {
+      "viscosity_factor": 12.0,
+      "Gr": 201388888.8888889,
+      "Ma": 62500.0,
+      "A": 0.0072,
+      "converged": false,
+      "sweeps": 700,
+      "residuals": {
+        "theta": 4.360256330394251e-05,
+        "omega": 0.03955194509943677,
+        "psi": 8.69470339346328e-14,
+        "G": 2.2194581783075234e-16
+      },
+      "diagnostics": {
+        "molten_volume": 0.09597918100988027,
+        "kinetic_energy": 4529.129392416182,
+        "circulation": 2.3238276298817846,
+        "enstrophy": 14081736.85188725,
+        "thermal_energy": 3.054707956211799,
+        "surface_temp_integral": 3.0840249857714372,
+        "heat_in_AC": 2.594729612049763,
+        "heat_out_DC": 2.5347259538000335,
+        "heat_out_OD": 0.0,
+        "imbalance": 0.023125206561437524,
+        "theta_max": 1.1351130129169968,
+        "psi_max": 6.2427426211417645,
+        "omega_max": 47889.78632293062,
+        "min_jacobian": 0.00014999999999999833
+      }
+    },
+    {
+      "viscosity_factor": 12.0,
+      "Gr": 201388888.8888889,
+      "Ma": 62500.0,
+      "A": 0.0072,
+      "converged": false,
+      "sweeps": 1100,
+      "residuals": {
+        "theta": 3.0069942172363046e-05,
+        "omega": 0.06246643037097347,
+        "psi": 4.363664001978971e-14,
+        "G": 2.2194581783075234e-16
+      },
+      "diagnostics": {
+        "molten_volume": 0.09749687533122237,
+        "kinetic_energy": 4442.896663559223,
+        "circulation": 2.2808223572221653,
+        "enstrophy": 13687264.518422369,
+        "thermal_energy": 3.055867855997148,
+        "surface_temp_integral": 3.0839887973742894,
+        "heat_in_AC": 2.591838492044299,
+        "heat_out_DC": 2.5322849909905787,
+        "heat_out_OD": 0.0,
+        "imbalance": 0.02297731947284569,
+        "theta_max": 1.1360844531776442,
+        "psi_max": 6.2722746766084505,
+        "omega_max": 47435.204340897035,
+        "min_jacobian": 0.00014999999999999833
+      }
+    }
+  ],
+  "epochs": []
+}
