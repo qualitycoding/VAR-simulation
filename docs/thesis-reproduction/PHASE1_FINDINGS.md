@@ -66,3 +66,13 @@ Thesis claim: h1, h2, h3 have very little effect; h = 50 and h = 500 give result
 | H = 2 (h = 500 scaled) | 0 | 1.065 | 1.45 (pool almost extinguished) | 0 |
 | H = 50 taken as dimensionless | 0 | 0.50 (no melting) | none | 0 |
 Result: not reproduced. Temperatures change modestly at H = 0.2 but the flow falls by about 60% and the pool vanishes at H = 2, whereas the thesis reports little effect at either value. Reading h as already dimensionless removes melting entirely, so the thesis cannot have meant that. The conversion H = h a / K and how h enters the thesis boundary conditions (top, side, base) are inferred, not stated; without an appendix this cannot be settled. All runs converged with heat-balance imbalance below 1%.
+
+## Test case: regular versus adapted grid (thesis 4.5.3, Figures 4.25 to 4.33; suite5/, src/adapted_case.py)
+Thesis: at nu x200 the adapted grid (lambda_0 = 0.1, lambda_v ramped 5 to 50) gives a stream function at most 4% weaker than the regular grid, attributed to more points between the cell centre and the surface; nu x70 also run on adapted grids.
+Method here (an analogue, NOT the thesis' variational lambda_0, lambda_v generator, which is not implemented): step source, band, flux_vanleer, Lorentz 2700; regular grid converged to nu x200; then the package's monitor-Poisson generator with a vorticity monitor 1 + w|omega|/max, w = 5, 10, 15, 25, 37, 50, re-converging at each step; then continued to nu x70 on the adapted grid.
+| N | regular psi at nu x200 | adapted psi at nu x200 (w = 50) | adapted psi at nu x70 |
+|---|---|---|---|
+| 21 | -0.34 | -0.76 | -2.35 |
+| 41 | -0.61 | -0.67 | -1.91 |
+Reference regular grid, N = 151 (suite3): psi = -0.85 at nu x200 and -2.47 at nu x70.
+Result: not reproduced in direction or size. Adaptation makes the flow stronger, not 4% weaker, and moves it towards the fine-grid values, consistent with the earlier finding that the regular-grid flow still grows with N. At N = 21 the stream function is not monotonic in w (-0.40, -0.48, -0.40, -0.31, -0.26, -0.76), so on coarse grids the adapted result depends strongly on the grid-generation weights. A faithful test needs the thesis' own grid generator. All runs converged.
