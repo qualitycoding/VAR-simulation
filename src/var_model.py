@@ -344,6 +344,10 @@ class VARModel:
                 rhs = rhs + p.Pr * (flux_convection_correction(self.theta, Fx, Fy).ravel()
                                     / (self.Rsafe * self.met.J.ravel()))
         A = self.L + sp.diags(1.0 / self.Rsafe) @ self.dR - p.Pr * conv
+        dt_th = getattr(self, "theta_dt", None)          # implicit-Euler term Pr dtheta/dt (transient runs only)
+        if dt_th:
+            A = A - (p.Pr / dt_th) * sp.identity(m * n)
+            rhs = rhs - (p.Pr / dt_th) * self.theta_old.ravel()
 
         bc = _BCRows((m * n, m * n))
         th = self.theta
@@ -411,7 +415,9 @@ class VARModel:
         F2_Z = self.dZ @ (F ** 2)
         rhs = p.Gr * theta_R + p.S_lor * F2_Z / self.Rsafe
         mask = np.zeros(m * n, bool); mask[self.interior] = True
-        rhs = np.where(mask, rhs + corr, 0.0) - sigma * np.where(mask, self.omega.ravel(), 0.0)
+        om_old = getattr(self, "omega_old", None)           # fixed previous-time vorticity in transient runs
+        om_old = self.omega.ravel() if om_old is None else om_old.ravel()
+        rhs = np.where(mask, rhs + corr, 0.0) - sigma * np.where(mask, om_old, 0.0)
 
         bc = _BCRows((m * n, m * n))
         # psi-coupling for the Thom rows, keyed by node so that a later
