@@ -103,11 +103,18 @@ The sign at ν×200 is opposite to the thesis (+10% against −4%), consistent w
 
 *Linear stability.* Implicit-Euler time stepping (time unit a²/ν; the thesis' energy equation has no latent-heat term, so the melt front follows the temperature instantly) was used with a perturbation of 10⁻⁸. The lagged inner iteration needs dt of about 10⁻⁵ at these Gr; runs at dt = 10⁻⁴ gave spurious growth and are not used. Differencing perturbed against unperturbed runs, t up to 0.015: stable (decaying) are the ν×70 state, the lower-flow state at ν×11.8 and the upper-branch states at ν×11.5, 11.4 and 11.3; unstable are the upper-branch state at ν×11.2 (growth by about 1,700 in t = 0.0075), both middle-sheet states tested and the strong-flow state at ν×10.1. Stability is therefore lost on the upper branch between ν×11.3 and ν×11.2, before its lower turning point, at Gr of about 2.3×10⁸. A longer run (t = 1) at ν×11.8 and ν×11.5 shows late decay rates of only −0.19 and −0.02 per unit time, close to marginal.
 
-*Nonlinear regime.* See section 3.7.
+*Nonlinear regime.* See section 3.7: the unstable states settle onto sustained oscillations.
 
 ### 3.7 Nonlinear time-dependent behaviour below the stability limit
 
-(To be completed from the nonlinear runs started from the unstable states at ν×11.2 and ν×10.12; see `data/suite8/nl_*`.)
+Two runs were integrated to t = 0.4 (about 20,000 steps at dt = 2×10⁻⁵, adaptive up to 2×10⁻⁴), starting from the unstable steady states at ν×11.2 (upper branch) and ν×10.12 (strong sheet) with a 10⁻⁶ perturbation. Neither relaxes to a steady state and neither blows up:
+
+| Start state | Late-time kinetic energy (mean) | Peak-to-peak | ψ max range | Behaviour |
+| --- | --- | --- | --- | --- |
+| ν×11.2 | 1,397 | 245 (about 18%) | 5.63 to 6.13 | Sustained oscillation, period about 0.017 |
+| ν×10.12 | 2,207 | 101 (about 5%) | 7.20 to 7.63 | Sustained oscillation, period about 0.005 (undersampled) |
+
+The amplitude is the same in the first and second halves of each record (237 against 245, and 100.6 against 100.4), so these are saturated oscillations, consistent with a limit cycle born at the loss of stability near ν×11.2 to 11.3, not a transient. The pattern at ν×11.2 is regular (peak intervals of 0.016 to 0.018 throughout). Records were written every 0.002, so the ν×10.12 period is only about 2.7 samples per cycle and is a rough estimate; its amplitude is a lower bound. Cell centres wobble by one grid spacing (R 0.35 to 0.43, Z 1.39 to 1.43). These are 41×41 results with first-order-in-time implicit Euler (which damps oscillations, so true amplitudes are likely larger), and, given the grid dependence in section 3.6, they show that the discrete model becomes time-dependent at Gr of about 2.3×10⁸, not that the physical flow does. Whether the oscillation is periodic or has more than one frequency, and how it behaves at lower ν, was not established.
 
 ## 4. Discussion
 
@@ -126,6 +133,7 @@ The sign at ν×200 is opposite to the thesis (+10% against −4%), consistent w
 - High-Gr results (above about Gr 10⁸) are not grid-converged, the heat-balance defect is large, and all fold and stability results are at 41×41.
 - Stability was tested by time integration with a lagged-coefficient scheme over short windows (t ≤ 0.015, plus two runs to t = 1); slowly growing modes cannot be excluded, and the type of the bifurcation near ν×11.2 to 11.3 was not identified.
 - The adapted-grid test uses a re-implementation of the thesis' generator by direct minimisation, with an unknown weight scaling.
+- The nonlinear runs are two cases at 41×41, sampled every 0.002, with a first-order time scheme.
 - Only the Gaussian source was traced through the folds; the step source was continued to ν×1 without arclength continuation or stability analysis.
 
 ## 6. Reproducibility

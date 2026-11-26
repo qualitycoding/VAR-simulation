@@ -30,7 +30,7 @@ Branch `thesis-reproduction-suite`. Compares the solver with Polton (1998), chap
 | `suite5/` | Regular versus adapted grid, step source, N = 21 and 41 (`adapt_N.json/.log`, `.npz` states); driver `src/adapted_case.py` (package monitor-Poisson generator, not the thesis' variational generator) | step 2700 | band, flux_vanleer |
 | `suite6/` | Adapted grid with the thesis' variational generator, Gaussian source, N = 21 (kappa scan 1 to 1e4) and N = 41 (kappa 1000, 4000); `summ.py` tabulates | Gaussian 11500 | band, flux_vanleer |
 | `suite7/` | Higher Gr: Picard + Newton-Krylov continuation to nu x1 (`higr_*`, `nk_*`, `full_*` JSON/log; selected `.npz` states at f = 1, 8, 12); step N = 41, 61, 81 and Gaussian N = 41; `eig_*.json` eigenvalues of the undamped Picard map; `arc/` Gaussian N = 41 pseudo-arclength trace (`gup.json`, `gdn.json`, logs) and natural-continuation branch tests (`br_*`) | step 2700, Gaussian 11500 | band, flux_vanleer |
-| `suite8/` | Time-dependent stability tests, Gaussian N = 41 (`stab_*.log/.json` dt 1e-4 runs, partly superseded; `stab2_*.log/.json` dt 1e-5 differenced runs, authoritative); `summ.py` | Gaussian 11500 | band, flux_vanleer |
+| `suite8/` | Time-dependent stability tests, Gaussian N = 41 (`stab_*.log/.json` dt 1e-4 runs, partly superseded; `stab2_*.log/.json` dt 1e-5 differenced runs, authoritative; `nl_f11.2.*`, `nl_f10.12.*` nonlinear runs to t = 0.4 from `scripts/nonlinear.py`); `summ.py` | Gaussian 11500 | band, flux_vanleer |
 | `probes/` | Earlier exploratory probes (thesis_probe1-4, gauss_probe, flip_scan, variations_probe1-3) | various | various |
 
 ## Caveats
@@ -38,3 +38,8 @@ Lorentz multiplier 2457 and the Gaussian factor of about 4 are inferred, not der
 
 ## Not in the repository
 The thesis PDF, its extracted text and the page images used to digitise Figures 4.4 and 4.6 are the author's thesis and are not redistributed here; `scripts/compare_fig.py` expects cropped page images at `/home/claude/work/pg/fig44.png` and `fig46.png` (rendered from thesis PDF pages 130 and 136 at 220 dpi).
+
+
+## Reports
+
+- `REPORT.md`: complete findings report for publication (supersedes `INTERIM_REPORT_2026-11-25.md`; `PHASE1_FINDINGS.md` holds the running notes).
