@@ -75,6 +75,7 @@ class Parameters:
         self.theta3 = 0.0
         self.eps = 300.0 / 1400.0
         self.R0 = 0.08 / 0.10              # r0 / a
+        self.source = "gaussian"          # 'gaussian' or 'step' (Ferriss uniform disc)
         self.z_max = 0.15 / 0.10           # h / a
         # D'Arcy coefficient.  Thesis section 4.1 defines C = 1e10 (1 - H),
         # but also quotes Hibbert, Markatos and Voller: C "should not be so
@@ -217,6 +218,8 @@ class VARModel:
         t_eta = np.gradient(self.theta, axis=1)
         band = self.p.mushy_cells * np.sqrt(t_xi ** 2 + t_eta ** 2)
         band = np.maximum(band, 1e-12)
+        if getattr(self.p, "mushy_profile", "linear") == "nodal":
+            return (self.theta >= 1.0).astype(float)      # thesis C = C0 (1 - H(theta-1)), node-wise
         s = np.clip((self.theta - 1.0) / band + 0.5, 0.0, 1.0)
         if getattr(self.p, "mushy_profile", "linear") == "smootherstep":
             # C2 profile with the same support and end values as the linear
@@ -277,6 +280,21 @@ class VARModel:
         vals = [a_xi * v for v in vx] + [a_eta * v for v in ve]
         return nodes, cols, vals
 
+    def _top_flux(self):
+        """Arc heat flux on AC: Gaussian, or the thesis/Ferriss step at R0."""
+        p, R = self.p, self.R[:, -1]
+        if getattr(p, "source", "gaussian") == "step":
+            h = np.abs(np.gradient(R))
+            return p.Nu * np.clip((p.R0 - R) / h + 0.5, 0.0, 1.0)
+        return p.Nu * np.exp(-(R / p.R0) ** 2)
+
+    def _top_G(self):
+        """G = R F on AC (current enclosed within R)."""
+        p, R = self.p, self.R[:, -1]
+        if getattr(p, "source", "gaussian") == "step":
+            return np.where(R < p.R0, 0.5 * (R / p.R0) ** 2, 0.5)
+        return 0.5 * (1.0 - np.exp(-(R / p.R0) ** 2))
+
     # ------------------------------------------------------------------
     def solve_magnetic(self):
         """Linear, decoupled: solved once per mesh.
@@ -299,7 +317,7 @@ class VARModel:
         # OA (i = 0): F = 0 => G = 0
         bc.set(idx[0, :], [idx[0, :]], [np.ones(n)], np.zeros(n))
         # AC (j = n-1): F = (1 - exp(-(R/R0)^2)) / (2R)  =>  G = (1 - exp)/2
-        gtop = 0.5 * (1.0 - np.exp(-(self.R[:, -1] / p.R0) ** 2))
+        gtop = self._top_G()
         bc.set(idx[:, -1], [idx[:, -1]], [np.ones(m)], gtop)
 
         M, b, rows = bc.assemble()
@@ -349,7 +367,7 @@ class VARModel:
         t = th[:, -1]
         d4 = p.k_T * 4.0 * p.N_rad * (t + p.eps) ** 3
         r4 = p.k_T * p.N_rad * ((t + p.eps) ** 4 - p.eps ** 4)
-        arc = p.Nu * np.exp(-(self.R[:, -1] / p.R0) ** 2)
+        arc = self._top_flux()
         nd, cols, vals = self._boundary_normal_rows("surface", "dZ")
         cols = cols + [idx[:, -1]]
         vals = vals + [p.H1 + d4]
@@ -554,7 +572,7 @@ class VARModel:
         """Net heat in through AC against radiative loss through DC."""
         p = self.p
         t = self.theta[:, -1]
-        arc = p.Nu * np.exp(-(self.R[:, -1] / p.R0) ** 2)
+        arc = self._top_flux()
         rad_top = p.k_T * p.N_rad * ((t + p.eps) ** 4 - p.eps ** 4)
         conv_top = p.H1 * (t - p.theta1)
         net_in = float(np.sum((arc - rad_top - conv_top) * self._surface_weights(-1)))
