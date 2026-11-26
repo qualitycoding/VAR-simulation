@@ -15,6 +15,7 @@ Branch `thesis-reproduction-suite`. Compares the solver with Polton (1998), chap
 ## Reports and figures
 - `PHASE1_FINDINGS.md`: running findings and numbers (latest, authoritative text).
 - `thesis_vs_solver_streamfunction.png`: thesis Figures 4.4 and 4.6 against the solver at N = 101, nu x100.
+- `INTERIM_REPORT_2026-11-25.md`: archived copy of the interim report (superseded in part by `PHASE1_FINDINGS.md`).
 - Interim report (Docs artifact): https://claude.ai/artifact/Br88Tdm9Gyy9Ld3Db4XFbH
 
 ## Data (data/)
@@ -32,3 +33,6 @@ Branch `thesis-reproduction-suite`. Compares the solver with Polton (1998), chap
 
 ## Caveats
 Lorentz multiplier 2457 and the Gaussian factor of about 4 are inferred, not derived; the pi ambiguity in (4.38) is unresolved. N = 151 runs are complete (all five rungs, both sources).
+
+## Not in the repository
+The thesis PDF, its extracted text and the page images used to digitise Figures 4.4 and 4.6 are the author's thesis and are not redistributed here; `scripts/compare_fig.py` expects cropped page images at `/home/claude/work/pg/fig44.png` and `fig46.png` (rendered from thesis PDF pages 130 and 136 at 220 dpi).
