@@ -8,6 +8,7 @@ Branch `thesis-reproduction-suite`. Compares the solver with Polton (1998), chap
 - `src/variational_grid.py`: thesis chapter 3 variational grid generator; `src/test_variational_grid.py` verifies it; `src/adapted_variational.py` couples it to the VAR solver.
 - `src/adapted_case.py`: earlier analogue using the package's monitor-Poisson generator (suite5).
 - `src/hi_gr.py`, `src/hi_gr_nk.py`, `src/nk_full.py`: high-Gr continuation drivers (Picard then Newton-Krylov); `scripts/hi_gr_diag.py`: eigenvalue diagnostic.
+- `src/arclength.py`: pseudo-arclength continuation in f; `src/nk_branch.py`: natural continuation from a saved state.
 - `src/thesis_suite.py`: viscosity-continuation driver (nu x500 to x70); optional state saving.
 - `docs/thesis-reproduction/scripts/`: `geom.py` (contour geometry of saved states), `compare_fig.py` (thesis-versus-solver figure), Phase 0 scripts (`ladder.py`, `diag0.py`).
 
@@ -26,7 +27,7 @@ Branch `thesis-reproduction-suite`. Compares the solver with Polton (1998), chap
 | `suite4/` | Heat-transfer test (h1 = h2 = h3), step source, N = 21; files `h0_`, `h50_` (H = 50 dimensionless), `H0.2_`, `H2.0_` (scaled) | step 2700 | band, flux_vanleer |
 | `suite5/` | Regular versus adapted grid, step source, N = 21 and 41 (`adapt_N.json/.log`, `.npz` states); driver `src/adapted_case.py` (package monitor-Poisson generator, not the thesis' variational generator) | step 2700 | band, flux_vanleer |
 | `suite6/` | Adapted grid with the thesis' variational generator, Gaussian source, N = 21 (kappa scan 1 to 1e4) and N = 41 (kappa 1000, 4000); `summ.py` tabulates | Gaussian 11500 | band, flux_vanleer |
-| `suite7/` | Higher Gr: Picard + Newton-Krylov continuation to nu x1 (`higr_*`, `nk_*`, `full_*` JSON/log; selected `.npz` states at f = 1, 8, 12); step N = 41, 61, 81 and Gaussian N = 41; `eig_*.json` eigenvalues of the undamped Picard map | step 2700, Gaussian 11500 | band, flux_vanleer |
+| `suite7/` | Higher Gr: Picard + Newton-Krylov continuation to nu x1 (`higr_*`, `nk_*`, `full_*` JSON/log; selected `.npz` states at f = 1, 8, 12); step N = 41, 61, 81 and Gaussian N = 41; `eig_*.json` eigenvalues of the undamped Picard map; `arc/` Gaussian N = 41 pseudo-arclength trace (`gup.json`, `gdn.json`, logs) and natural-continuation branch tests (`br_*`) | step 2700, Gaussian 11500 | band, flux_vanleer |
 | `probes/` | Earlier exploratory probes (thesis_probe1-4, gauss_probe, flip_scan, variations_probe1-3) | various | various |
 
 ## Caveats
