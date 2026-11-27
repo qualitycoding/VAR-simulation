@@ -152,7 +152,34 @@ continuation, fold and stability results.
 
 ---
 
-## Layout
+## Repository map and how to read it
+
+The repository holds two pieces of work, built in sequence. Both are on
+`main`; there are no other branches.
+
+1. **Solver rebuild and verification** (the Status section above, the
+   technical note and the verification report). Does the solver solve the
+   equations correctly? Answered with manufactured solutions, refinement
+   and heat-balance tests.
+2. **Thesis reproduction** (`docs/thesis-reproduction/`). Does the verified
+   solver reproduce the results in chapter 4 of the thesis? Answered with
+   the test suite described in `REPORT.md`.
+
+Read in this order: this README, then `docs/thesis-reproduction/REPORT.md`
+for the reproduction results; `docs/technical-note.html` for the solver
+verification; `docs/thesis-reproduction/INDEX.md` to find any data folder
+or script; `PHASE1_FINDINGS.md` only for exact numbers and retractions.
+
+The core solver files (`var_operators.py`, `var_model.py`) were extended
+during part 2 with optional switches (step arc source, node-wise D'Arcy
+term, Lorentz and Gaussian multipliers, time terms, a top-boundary flux
+helper). The defaults are unchanged, and `tests/test_operators.py` and
+`tests/test_convection.py` still pass. The verification numbers in the
+Status section were produced before these additions and refer to the
+default configuration. The reproduction results use non-default
+settings, always stated in `INDEX.md` for each data folder.
+
+### Part 1: solver and verification
 
     src/var_operators.py            metrics, conservative curvilinear operators
     src/var_model.py                the four coupled equations and their BCs
@@ -166,10 +193,43 @@ continuation, fold and stability results.
     tests/test_operators.py         manufactured-solution order verification
     tests/test_convection.py        convection scheme order and conservation checks
     tests/legacy_operator_check.py  reproduces the defect in the 2026 code
-    results/MANIFEST.md             what produced every file, and caveats
+    results/                        part 1 outputs; results/MANIFEST.md gives provenance
     docs/technical-note.html        the technical note
     docs/verification-report.html   the audit that prompted the rebuild
     legacy/                         the superseded implementation and draft
+
+### Part 2: thesis reproduction
+
+Code (in `src/`):
+
+    src/thesis_cases.py             the thesis cases and candidate coefficients
+    src/thesis_suite.py             continuation ladder and case runner
+    src/adapted_case.py             monitor-function adapted-grid analogue
+    src/variational_grid.py         thesis chapter 3 variational grid generator
+    src/test_variational_grid.py    gradient, uniform-grid and 1-D spacing checks for it
+    src/adapted_variational.py      adapted-grid test using that generator
+    src/hi_gr*.py, nk_full.py,
+      nk_branch.py                  high-Gr Newton-Krylov continuation
+    src/arclength.py                pseudo-arclength continuation in viscosity
+    src/transient.py, stab.py,
+      stab2.py, nonlinear.py        time stepping, stability tests, nonlinear runs
+
+Documents and data (in `docs/thesis-reproduction/`):
+
+    REPORT.md                       the findings report
+    PHASE1_FINDINGS.md              running notes with every number
+    INDEX.md                        index of data folders and scripts
+    INTERIM_REPORT_2026-11-25.md    superseded interim report
+    thesis_vs_solver_streamfunction.png   comparison figure
+    data/                           outputs of each run, by folder (suite ... suite8,
+                                    phase0, probes); `INDEX.md` gives the settings
+    scripts/                        copies of the run scripts as used for the data,
+                                    plus extra scripts not in `src/` (figure
+                                    comparison, geometry, early diagnostics, ladder)
+
+The scripts in `src/` are the maintained versions. The identical copies in
+`docs/thesis-reproduction/scripts/` are kept beside the data they
+produced; where a file exists in both places the two are the same.
 
 ## Install and run
 
