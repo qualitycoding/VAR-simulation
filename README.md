@@ -13,6 +13,78 @@ numbers in the source refer to that thesis. Parameters are its Table 4.1.
 
 ---
 
+## Why this project exists
+
+The 1998 thesis above solved a model of the molten pool in a vacuum arc
+remelted ingot (the flow, temperature and magnetic induction in the
+liquid metal) on solution-adapted grids. Its code is not available. A
+2026 recreation of it in Python was found, by audit, not to discretise
+the equations it claimed to, and its published solution was not
+converged. This repository holds the rebuilt, verified solver and a
+systematic test of one question: **does a modern, verified solver
+reproduce the results reported in chapter 4 of the thesis?**
+
+## Results at a glance
+
+Full detail, tables and limitations are in
+[`docs/thesis-reproduction/REPORT.md`](docs/thesis-reproduction/REPORT.md).
+
+**Reproduced**
+
+- The thesis' thermal anchors for the step-input arc (axis melt depth about
+  1.2, peak temperature about 1.28 at a viscosity factor of 100).
+- Flow directions for the step input, the zero-Grashof case and the
+  doubled-current case, and (with an inferred coefficient) the Gaussian
+  input, including the cell position and, at 101 x 101, its strength.
+
+**Inferred, not derived**
+
+- A Lorentz-force multiplier of about 2,500 over the printed Table 4.1
+  value (thesis equation 4.38 contains a factor of pi that the printed
+  boundary condition does not, so a roughly tenfold ambiguity remains) and
+  a Gaussian multiplier about four times the step's. Both are fits to the
+  thesis' coarse numbers.
+
+**Not reproduced**
+
+- The converged step-input flow is about twice the thesis' (stream
+  function about -1.9 to -2.0 against about -1). It keeps growing with grid
+  refinement (-0.79 at 21 x 21 to -1.79 at 151 x 151), so the thesis' flow
+  is best read as a coarse-grid result.
+- The thesis' second outward cell for the Gaussian input, its insensitivity
+  to the surface heat-transfer coefficients, and the sign and size of its
+  adapted-grid effect.
+
+**Beyond the thesis**
+
+- A variational grid generator implementing thesis chapter 3, and
+  Newton-Krylov and pseudo-arclength continuation. These reach the
+  thesis' own Grashof number (2.9e10) at 41 x 41 to 81 x 81, but those
+  solutions are not grid-converged and the heat balance fails by 9% to 29%.
+- For the Gaussian source the steady branch is folded near Gr = 2.2e8;
+  steady states beyond about Gr = 2.3e8 are linearly unstable and the
+  unstable states settle onto sustained oscillations (41 x 41, two cases).
+
+## Reports
+
+| Document | What it is |
+|---|---|
+| [`docs/thesis-reproduction/REPORT.md`](docs/thesis-reproduction/REPORT.md) | Complete findings report: methods, results by test case, inferred parameters, limitations |
+| [`docs/thesis-reproduction/PHASE1_FINDINGS.md`](docs/thesis-reproduction/PHASE1_FINDINGS.md) | Running notes with every number, including retractions |
+| [`docs/thesis-reproduction/INDEX.md`](docs/thesis-reproduction/INDEX.md) | Index of all data folders, scripts and report versions |
+| [`docs/technical-note.html`](docs/technical-note.html) | Technical note on the rebuilt solver and its verification |
+| [`docs/verification-report.html`](docs/verification-report.html) | Audit of the earlier implementation |
+| [`docs/thesis-reproduction/INTERIM_REPORT_2026-11-25.md`](docs/thesis-reproduction/INTERIM_REPORT_2026-11-25.md) | Earlier interim report, superseded by `REPORT.md` |
+
+The thesis itself is not included in this repository.
+
+The sections below describe the verification of the rebuilt solver. The
+"Continuation stops at Gr = 2.0e8" limitation under Status predates the
+thesis-reproduction work; see `REPORT.md` section 3.6 for the later
+continuation, fold and stability results.
+
+---
+
 ## Status — read this first
 
 **Converged and verified**
@@ -154,6 +226,7 @@ residual behave is not thereby correct.
 
 ## Documentation
 
+- `docs/thesis-reproduction/REPORT.md` — the thesis-reproduction report.
 - `docs/technical-note.html` — the technical note, including the full
   statement of what is and is not established.
 - `docs/verification-report.html` — the audit of the earlier
